@@ -1,157 +1,281 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Jonathan Yang</title>
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="index.js"></script>
-    </head>
+  <head>
+    <title>Jonathan Yang</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="index.js"></script>
+  </head>
 
-    <body>
-        <div id="navigation-container">
-            <nav class="navbar navbar-expand-lg  navbar-light bg-light">
-                <a class="navbar-brand" href="#">Jonathan Yang</a>
-                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                </button>
-            
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
+  <body>
+    <div id="navigation-container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Jonathan Yang</a>
 
-                    <li class="nav-item">
-                    <a class="nav-link" href="education.html">Education</a>
-                    </li>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <li class="nav-item">
-                    <a class="nav-link" href="awards.html">Awards</a>
-                    </li>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#"
+                >Home <span class="sr-only">(current)</span></a
+              >
+            </li>
 
-                    <li class="nav-item">
-                        <div class="dropdown">
-                            <a class="dropdown-toggle nav-link" href="#" role="button" id="projectsDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Projects</a>
-                            <div class="dropdown-menu" aria-labelledby="projectsDropdown">
-                                <a class="dropdown-item" href="https://sites.google.com/view/auto-schedule/home">Autoschedule (deprecated)</a>
-                              <a class="dropdown-item" href="ForbiddenIsland.html">Forbidden Island Game</a>
-                                <a class="dropdown-item" href="https://www.merl.systems">MERL</a>
-                              <a class="dropdown-item" href="https://github.com/Jzhyang1/electrical_load_prediction">Electrical Load Prediction Research</a>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="education.html">Education</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="awards.html">Awards</a>
+            </li>
+
+            <li class="nav-item">
+              <div class="dropdown">
+                <a
+                  class="dropdown-toggle nav-link"
+                  href="#"
+                  role="button"
+                  id="projectsDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  >Projects</a
+                >
+                <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+                  <a
+                    class="dropdown-item"
+                    href="https://sites.google.com/view/auto-schedule/home"
+                    >Autoschedule (deprecated)</a
+                  >
+                  <a class="dropdown-item" href="ForbiddenIsland.html"
+                    >Forbidden Island Game</a
+                  >
+                  <a class="dropdown-item" href="https://www.merl.systems"
+                    >MERL</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="https://github.com/Jzhyang1/electrical_load_prediction"
+                    >Electrical Load Prediction Research</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="games/snake/TraditionalSnake.html"
+                    >Snake Game</a
+                  >
+                  <a class="dropdown-item" href="fermi.html">Fermi Game</a>
                 </div>
-            </nav>
+              </div>
+            </li>
+          </ul>
         </div>
+      </nav>
+    </div>
 
-        <div id="body-wrap" class="container-fluid">
-            <div class="row flex-nowrap">
-                <div class="col-auto col-md-4 col-xl-3 px-sm-3 px-0 bg-secondary">
-                    <div class="d-flex align-items-center align-items-sm-start px-4 pt-3 min-vh-100">
-                        <section id="introduction" class="container">
-                            <div id="portrait">
-                                <img src="portrait.jpg" class="rounded-circle img-thumbnail" alt="image" width="210px" height="250px">
-                            </div>
-                            <h1 class="text-white" style="font-size:larger">Jonathan J. Yang</h1>
-                            <p class="text-light" style="font-size:medium">
-                                Student at Seven Lakes High School <br/>
-                                Class of 2024  <br/>
-                                <span style="font-size:small; color:aliceblue">
-                                    Katy, Texas, United States <br/>
-                                    Age: <span id="age"></span>
-                                </span>
-                            </p>
-                            <br/>
-                            <div id="contact" class="text-light">
-                                <style>
-                                a.contrast:link, a.contrast:visited {
-                                    color: rgba(199, 199, 199, 0.872)
-                                }
-                                a.contrast:hover, a.contrast:active {
-                                    color: gray;
-                                }
-                                </style>
-                                <h4 for="contactMethods" style="font-size:large">Contact</h4>
-                                <ul id="contactMethods">
-                                    <li>School Email: <a class="contrast" href="mailto:y1003314@students.katyisd.com">y1003314@students.katyisd.com</a></li>
-                                    <li>Personal Email: <a class="contrast" href="mailto:Jzhyang1@gmail.com">Jzhyang1@gmail.com</a></li>
-                                    <li>Phone: <a class="contrast" href="tel:281-919-7492">281-919-7492</a></li>
-                                    <li>Facebook: <a class="contrast" href="https://www.facebook.com/100056849380269/">Jonathan Yang</a></li>
-                                    <li>Instagram: <a class="contrast" href="https://www.instagram.com/jzhyang1">@jzhyang1</a></li>
-                                    <li>LinkedIn: <a class="contrast" href="https://www.linkedin.com/in/jonathan-yang-a06b41269">Jonathan Yang</a></li>
-                                    <li>GitHub: <a class="contrast" href="https://github.com/kisdjonathan">KISDjonathan</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                    </div>
+    <div id="body-wrap" class="container-fluid">
+      <div class="row flex-nowrap">
+        <div class="col-auto col-md-4 col-xl-3 px-sm-3 px-0 bg-secondary">
+          <div
+            class="d-flex align-items-center align-items-sm-start px-4 pt-3 min-vh-100"
+          >
+            <section id="introduction" class="container">
+              <div id="portrait">
+                <img
+                  src="portrait.jpg"
+                  class="rounded-circle img-thumbnail"
+                  alt="image"
+                  width="210px"
+                  height="250px"
+                />
+              </div>
+              <h1 class="text-white" style="font-size: larger">
+                Jonathan J. Yang
+              </h1>
+              <p class="text-light" style="font-size: medium">
+                Student at Seven Lakes High School <br />
+                Class of 2024 <br />
+                <span style="font-size: small; color: aliceblue">
+                  Katy, Texas, United States <br />
+                  Age: <span id="age"></span>
+                </span>
+              </p>
+              <br />
+              <div id="contact" class="text-light">
+                <style>
+                  a.contrast:link,
+                  a.contrast:visited {
+                    color: rgba(199, 199, 199, 0.872);
+                  }
+                  a.contrast:hover,
+                  a.contrast:active {
+                    color: gray;
+                  }
+                </style>
+                <h4 for="contactMethods" style="font-size: large">Contact</h4>
+                <ul id="contactMethods">
+                  <li>
+                    School Email:
+                    <a
+                      class="contrast"
+                      href="mailto:y1003314@students.katyisd.com"
+                      >y1003314@students.katyisd.com</a
+                    >
+                  </li>
+                  <li>
+                    Personal Email:
+                    <a class="contrast" href="mailto:Jzhyang1@gmail.com"
+                      >Jzhyang1@gmail.com</a
+                    >
+                  </li>
+                  <li>
+                    Phone:
+                    <a class="contrast" href="tel:281-919-7492">281-919-7492</a>
+                  </li>
+                  <li>
+                    Facebook:
+                    <a
+                      class="contrast"
+                      href="https://www.facebook.com/100056849380269/"
+                      >Jonathan Yang</a
+                    >
+                  </li>
+                  <li>
+                    Instagram:
+                    <a
+                      class="contrast"
+                      href="https://www.instagram.com/jzhyang1"
+                      >@jzhyang1</a
+                    >
+                  </li>
+                  <li>
+                    LinkedIn:
+                    <a
+                      class="contrast"
+                      href="https://www.linkedin.com/in/jonathan-yang-a06b41269"
+                      >Jonathan Yang</a
+                    >
+                  </li>
+                  <li>
+                    GitHub:
+                    <a class="contrast" href="https://github.com/kisdjonathan"
+                      >KISDjonathan</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="col py-4">
+          <section id="quickInfo" class="container">
+            <h3>Some things about me</h3>
+            <div class="row">
+              <div class="col-sm">
+                <div class="card" style="width: 17rem">
+                  <img
+                    class="card-img-top"
+                    src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                    height="230rem"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">GitHub</h5>
+                    <p class="card-text">
+                      I love free services. Thank you GitHub and Google Sites
+                      for hosting my websites (as you can see from the url). Any
+                      domain that I use has been obtained for free through the
+                      GitHub student developer pack. I'm going to start moveing
+                      repositories from my school GitHub account to my personal
+                      one since I won't have access to my school account after I
+                      graduate.
+                    </p>
+                    <a
+                      href="https://github.com/Jzhyang1"
+                      class="btn btn-primary"
+                      >Personal GitHub Account</a
+                    >
+                  </div>
                 </div>
-                <div class="col py-4">
-                    <section id="quickInfo" class="container">
-                        <h3>Some things about me</h3>
-                        <div class="row">
-                            <div class="col-sm">
-                                <div class="card" style="width: 17rem;">
-                                    <img class="card-img-top" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" height="230rem">
-                                    <div class="card-body">
-                                    <h5 class="card-title">GitHub</h5>
-                                    <p class="card-text">
-                                        I love free services. Thank you GitHub and Google Sites for hosting my websites (as you can see from the url). 
-                                        Any domain that I use has been obtained for free through the GitHub student developer pack.
-                                        I'm going to start moveing repositories from my school GitHub account to my personal one since I won't have access to my school account after I graduate.
-                                    </p>
-                                    <a href="https://github.com/Jzhyang1" class="btn btn-primary">Personal GitHub Account</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm">
-                                <div class="card" style="width: 17rem;">
-                                    <img class="card-img-top" src="drawing.jpg" height="200px">
-                                    <div class="card-body">
-                                    <h5 class="card-title">Interests</h5>
-                                    <p class="card-text">
-                                        I like piano and drawing, but I have not been able to actively pursue any <s>because it doesn't help with getting a job</s> because I need to focus on my studies
-                                    </p>
-                                    <!-- <a href="https://www.allturtles.com/" class="btn btn-primary">Turtles</a> -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm">
-                                <div class="card" style="width: 17rem;">
-                                    <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/e/e1/KL_Intel_D8086.jpg"  height="200px">
-                                    <div class="card-body">
-                                    <h5 class="card-title">Favorites</h5>
-                                    <p class="card-text">
-                                        <b>Favorite language: </b>x86 Assembly<br/>
-                                        <b>Favorite website: </b>Wikipedia<br/>
-                                        <b>Favorite subject: </b>Math?<br/>
-                                        <b>Favorite comic: </b>Garfield<br/>
-                                        <b>Favorite planet: </b>possibly Earth<br/>
-                                    </p>
-                                    <a href="https://en.wikipedia.org/wiki/Earth" class="btn btn-primary">Earth</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm">
-                                <div class="card" style="width: 17rem;">
-                                    <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Science_museum_025_adjusted.jpg/240px-Science_museum_025_adjusted.jpg"  height="200px">
-                                    <div class="card-body">
-                                    <h5 class="card-title">Computers</h5>
-                                    <p class="card-text">
-                                        I have a giant tub of electronics that I have taken apart, none of which are likely usable anymore, but they're still cool to have.
-                                        I built my own desktop in 8th grade without realizing that it is only gamers who build their own PCs.
-                                        I built my own operating system in 9th grade, and I can proudly say that it successfully freezes your computer.<br/>
-                                        Computers are fun☺
-                                    </p>
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                    </section>
+              </div>
+              <div class="col-sm">
+                <div class="card" style="width: 17rem">
+                  <img class="card-img-top" src="drawing.jpg" height="200px" />
+                  <div class="card-body">
+                    <h5 class="card-title">Interests</h5>
+                    <p class="card-text">
+                      I like piano and drawing, but I have not been able to
+                      actively pursue any
+                      <s>because it doesn't help with getting a job</s> because
+                      I need to focus on my studies
+                    </p>
+                    <!-- <a href="https://www.allturtles.com/" class="btn btn-primary">Turtles</a> -->
+                  </div>
                 </div>
+              </div>
+              <div class="col-sm">
+                <div class="card" style="width: 17rem">
+                  <img
+                    class="card-img-top"
+                    src="https://upload.wikimedia.org/wikipedia/commons/e/e1/KL_Intel_D8086.jpg"
+                    height="200px"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">Favorites</h5>
+                    <p class="card-text">
+                      <b>Favorite language: </b>x86 Assembly<br />
+                      <b>Favorite website: </b>Wikipedia<br />
+                      <b>Favorite subject: </b>Math?<br />
+                      <b>Favorite comic: </b>Garfield<br />
+                      <b>Favorite planet: </b>possibly Earth<br />
+                    </p>
+                    <a
+                      href="https://en.wikipedia.org/wiki/Earth"
+                      class="btn btn-primary"
+                      >Earth</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <div class="card" style="width: 17rem">
+                  <img
+                    class="card-img-top"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Science_museum_025_adjusted.jpg/240px-Science_museum_025_adjusted.jpg"
+                    height="200px"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">Computers</h5>
+                    <p class="card-text">
+                      I have a giant tub of electronics that I have taken apart,
+                      none of which are likely usable anymore, but they're still
+                      cool to have. I built my own desktop in 8th grade without
+                      realizing that it is only gamers who build their own PCs.
+                      I built my own operating system in 9th grade, and I can
+                      proudly say that it successfully freezes your computer.<br />
+                      Computers are fun☺
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>        
-    </body>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
