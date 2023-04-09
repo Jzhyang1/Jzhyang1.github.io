@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fermi Quizzer</title>
+    <script>
+      let phys = [
+        ["boltzmann's constant", "1e-23+"],
+        ["electron charge", "2e-19-"],
+        ["speed of light", "3e8="],
+        ["universal gravitational constant", "7e-11-"],
+        ["planck's constant", "7e-34-"],
+        ["permittivity", "9e-12-"],
+        ["permeability", "1e-6+"],
+        ["magnetic constant", "1e-7="],
+        ["planck length", "2e-35-"],
+        ["planck time", "5e-44+"],
+        ["planck energy", "2e9="],
+        ["planck force", "1e44+"],
+        ["planck temperature", "1e32+"],
+        ["erg (J)", "1e-7="],
+      ];
+      let chem = [
+        ["electron mass", "9e-31="],
+        ["unified atomic mass (kg)", "2e-27-"],
+        ["proton mass", "2e-27-"],
+        ["avagadro's number", "6e23="],
+        ["universal gas constant", "8e0+"],
+        ["atmosphere (Pa)", "1e5="],
+        ["unit cell of iron", "3e-10-"],
+        ["diameter of atom", "1e-10="],
+        ["ATP molecule energy (J)", "1e-19="],
+        ["1 gram of ATP energy (J)", "5e5-"],
+        ["1 liter of gasoline energy (J)", "3e7+"],
+        ["atomic mass of iron (amu)", "5e1+"],
+        ["atmoic mass of gold (amu)", "2e2="],
+      ];
+      let bio = [
+        ["blue whale length", "3e1"],
+        ["blue whale mass", "2e5"],
+        ["fairyfly mass", "1e-6"],
+        ["fairyfly length", "1e-3"],
+        ["number of ants", "1e16"],
+        ["ant mass", "1e-5"],
+        ["number of bacteria", "1e30"],
+        ["etruscan shrew length", "1e-1"],
+        ["etruscan shrew mass", "5e-2"],
+        ["number of species in the world", "1e7"],
+        ["number of animal species in the world", "1e6"],
+        ["bacteria length", "5e-5"],
+        ["bacteria mass", "1e-12"],
+        ["viruses in a sick person", "1e10"],
+        ["mass of viruses in a sick person", "1e-7"],
+        ["virus length", "1e-7"],
+        ["number of cells in a human", "1e14"],
+        ["number of human genes", "2e4+"],
+        ["number of base pairs in a human cell", "3e9"],
+        ["number of species in the amazon", "3e6"],
+        ["number of tree species in the amazon", "3e3"],
+        ["number of species in the ocean", "1e6"],
+        ["number of fish in the sea", "4e12-"],
+        ["diameter of a human cell", "1e-4"],
+        ["number of genes in a virus", "1e1"],
+        ["number of genes in a bacteria", "1e3"],
+        ["number of genes in mitochondria", "4e1"],
+      ];
+      let references = [
+        ["Olympic swimming pool (L)", "3e6-"],
+        ["Giza (m^3)", "3e6-"],
+        ["paper thickness (m)", "1e-4="],
+        ["number of words per pencil", "5e4-"],
+        ["length of line by pencil (m)", "6e4-"],
+        ["length of line written by pen (m)", "1e3="],
+        ["furlong (m)", "2e2="],
+        ["firkin (kg)", "4e1="],
+        ["fornight (s)", "1e6+"],
+        ["furlongs per fortnight (m/s)", "2e-4-"],
+        ["shipping container volume (m^3)", "3e1+"],
+      ];
+      let questions = references.concat(bio).concat(chem).concat(phys);
+
+      let points_ctr = 0;
+      let questions_ctr = 0;
+      let prev_answer = "";
+      function genQuestion() {
+        let q = questions[Math.floor(Math.random() * questions.length)];
+        document.getElementById("display-question").innerHTML = q[0];
+        prev_answer = q[1];
+
+        document.getElementById("entry-mantissa").value = 1;
+        document.getElementById("entry-exponent").value = 0;
+        document.getElementById("entry-mantissa").focus();
+      }
+      async function nextQuestion() {
+        let mantissa = document.getElementById("entry-mantissa").value;
+        let exponent = document.getElementById("entry-exponent").value;
+
+        let side = prev_answer[prev_answer.length - 1];
+        let correct = (
+          ["-", "+", "="].includes(side)
+            ? prev_answer.substring(0, prev_answer.length - 1)
+            : prev_answer
+        ).split("e");
+        let correct_mantissa = parseInt(correct[0]);
+        let correct_exponent = parseInt(correct[1]);
+
+        // console.log(
+        //   "recieved:%d e%d; correct:%f e %d",
+        //   mantissa,
+        //   exponent,
+        //   correct_exponent,
+        //   correct_exponent
+        // );
+
+        let is_correct = false;
+        if (correct_exponent - exponent == 0) {
+          switch (side) {
+            case "-":
+              is_correct = correct_mantissa - mantissa <= 0.5;
+              break;
+            case "+":
+              is_correct = mantissa - correct_mantissa <= 0.5;
+              break;
+            case "=":
+              is_correct = Math.abs(mantissa - correct_mantissa) <= 0.15;
+              break;
+            default:
+              is_correct = Math.abs(mantissa - correct_mantissa) <= 1;
+          }
+        }
+        document.getElementById("display-question").innerHTML =
+          correct.join("x10^");
+        let display = document.getElementById("container-question");
+        let bg = display.backgroundColor;
+        if (is_correct) {
+          ++points_ctr;
+          display.style.backgroundColor = "#106620";
+        } else {
+          display.style.backgroundColor = "#661020";
+        }
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        display.style.background = "none";
+        ++questions_ctr;
+        document.getElementById("points").innerHTML = points_ctr;
+        document.getElementById("questions").innerHTML = questions_ctr;
+        document.getElementById("score").innerHTML = points_ctr / questions_ctr;
+
+        genQuestion();
+      }
+      addEventListener("DOMContentLoaded", genQuestion);
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body,
+      input {
+        font-family: "Montserrat", serif;
+      }
+      main {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: black;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
+      .game-quiz-container {
+        width: 40rem;
+        height: 30rem;
+        background-color: lightgray;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        border-radius: 30px;
+      }
+      .game-details-container {
+        width: 80%;
+        height: 4rem;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .game-details-container h1 {
+        font-size: 1.2rem;
+      }
+      .game-question-container {
+        width: 80%;
+        height: 6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid darkgray;
+        border-radius: 25px;
+      }
+      .game-question-container h1 {
+        font-size: 1.1rem;
+        text-align: center;
+        padding: 3px;
+      }
+      .game-options-container {
+        width: 80%;
+        height: 16rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+      }
+      .game-options-container span {
+        width: 45%;
+        height: 5rem;
+        border: 2px solid darkgray;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .game-options-container input {
+        border: none;
+        position: relative;
+        width: 60%;
+        left: 20%;
+        background: none;
+        font-size: larger;
+      }
+      span label {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s;
+        font-weight: 600;
+        color: rgb(22, 22, 22);
+      }
+      span label:hover {
+        -ms-transform: scale(1.12);
+        -webkit-transform: scale(1.12);
+        transform: scale(1.12);
+        color: white;
+      }
+      .next-button-container {
+        width: 50%;
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+      }
+      .next-button-container button {
+        width: 8rem;
+        height: 2rem;
+        border-radius: 10px;
+        background: none;
+        color: rgb(25, 25, 25);
+        font-weight: 600;
+        border: 2px solid gray;
+        cursor: pointer;
+        outline: none;
+      }
+      .next-button-container button:hover {
+        background-color: rgb(143, 93, 93);
+      }
+      @media (min-width: 300px) and (max-width: 350px) {
+        .game-quiz-container {
+          width: 90%;
+          height: 80vh;
+        }
+        .game-details-container h1 {
+          font-size: 0.8rem;
+        }
+        .game-question-container {
+          height: 6rem;
+        }
+        .game-question-container h1 {
+          font-size: 0.9rem;
+        }
+        .game-options-container span {
+          width: 90%;
+          height: 2.5rem;
+        }
+        .game-options-container span label {
+          font-size: 0.8rem;
+        }
+      }
+      @media (min-width: 350px) and (max-width: 700px) {
+        .game-quiz-container {
+          width: 90%;
+          height: 80vh;
+        }
+        .game-details-container h1 {
+          font-size: 1rem;
+        }
+        .game-question-container {
+          height: 8rem;
+        }
+        .game-question-container h1 {
+          font-size: 0.9rem;
+        }
+        .game-options-container span {
+          width: 90%;
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @-webkit-keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <div class="game-quiz-container">
+        <div class="game-details-container">
+          <h1>
+            Score : <span id="points">0</span> / <span id="questions">0</span> =
+            <span id="score">0</span>
+          </h1>
+        </div>
+
+        <div class="game-question-container" id="container-question">
+          <h1 id="display-question"></h1>
+        </div>
+
+        <div class="game-options-container">
+          <span>
+            <input
+              type="number"
+              id="entry-mantissa"
+              name="entry"
+              class="number"
+              value="0"
+              onkeydown="if (event.keyCode == 13) document.getElementById('entry-exponent').focus()"
+            />
+            <label for="entry-mantissa" class="number" id="mantissa-label"
+              >mantissa</label
+            >
+          </span>
+
+          <span>
+            <input
+              type="number"
+              id="entry-exponent"
+              name="entry"
+              class="number"
+              value="0"
+              onkeydown="if (event.keyCode == 13) document.getElementById('button-submit').click()"
+            />
+            <label for="entry-exponent" class="number" id="exponent-label"
+              >exponent</label
+            >
+          </span>
+        </div>
+
+        <div class="next-button-container">
+          <button id="button-submit" onclick="nextQuestion()">
+            Next Question
+          </button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
