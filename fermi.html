@@ -94,17 +94,6 @@
       let points_ctr = 0;
       let questions_ctr = 0;
       
-      let stored_score = localStorage.getItem('stored_score');
-      if(stored_score) {
-        let parsed_stored_score = stored_score.split('/');
-        points_ctr = parsed_stored_score[0];
-        questions_ctr = parsed_stored_score[1];
-        
-        document.getElementById("points").innerHTML = points_ctr;
-        document.getElementById("questions").innerHTML = questions_ctr;
-        document.getElementById("score").innerHTML = points_ctr / questions_ctr;
-      }
-      
       let prev_answer = "";
       function genQuestion() {
         let q = questions[Math.floor(Math.random() * questions.length)];
@@ -172,7 +161,19 @@
         genQuestion();
       }
       
-      addEventListener("DOMContentLoaded", genQuestion);
+      addEventListener("DOMContentLoaded", ()=>{
+        let stored_score = localStorage.getItem('stored_score');
+        if(stored_score) {
+          let parsed_stored_score = stored_score.split('/');
+          points_ctr = parseInt(parsed_stored_score[0]);
+          questions_ctr = parseInt(parsed_stored_score[1]);
+
+          document.getElementById("points").innerHTML = points_ctr;
+          document.getElementById("questions").innerHTML = questions_ctr;
+          document.getElementById("score").innerHTML = points_ctr / questions_ctr;
+        }
+        genQuestion();
+      });
       addEventListener('beforeunload', ()=>localStorage.setItem('stored_score', points_ctr+'/'+questions_ctr));
     </script>
     <style>
