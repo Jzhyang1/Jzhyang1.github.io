@@ -18,6 +18,7 @@
         ["planck force", "1e44+"],
         ["planck temperature", "1e32+"],
         ["erg (J)", "1e-7="],
+        ["frequency of red light", "4e14+"],
       ];
       let chem = [
         ["electron mass", "9e-31="],
@@ -94,10 +95,11 @@
       let points_ctr = 0;
       let questions_ctr = 0;
       
+      let prev_question = "";
       let prev_answer = "";
       function genQuestion() {
         let q = questions[Math.floor(Math.random() * questions.length)];
-        document.getElementById("display-question").innerHTML = q[0];
+        document.getElementById("display-question").innerHTML = prev_question = q[0];
         prev_answer = q[1];
 
         document.getElementById("entry-mantissa").value = 1;
@@ -162,19 +164,28 @@
       }
       
       addEventListener("DOMContentLoaded", ()=>{
-        let stored_score = localStorage.getItem('stored_score');
-        if(stored_score) {
-          let parsed_stored_score = stored_score.split('/');
-          points_ctr = parseInt(parsed_stored_score[0]);
-          questions_ctr = parseInt(parsed_stored_score[1]);
+        try{
+          let stored_score = localStorage.getItem('stored_score');
+          if(stored_score) {
+            let parsed_stored_score = stored_score.split('/');
+            points_ctr = parseInt(parsed_stored_score[0]);
+            questions_ctr = parseInt(parsed_stored_score[1]);
+            
+            prev_question = localStorage.getItem('prev_question');
+            prev_answer = localStorage.getItem('prev_answer');
 
-          document.getElementById("points").innerHTML = points_ctr;
-          document.getElementById("questions").innerHTML = questions_ctr;
-          document.getElementById("score").innerHTML = points_ctr / questions_ctr;
-        }
+            document.getElementById("points").innerHTML = points_ctr;
+            document.getElementById("questions").innerHTML = questions_ctr;
+            document.getElementById("score").innerHTML = points_ctr / questions_ctr;
+          }
+        } catch(e){}
         genQuestion();
       });
-      addEventListener('beforeunload', ()=>localStorage.setItem('stored_score', points_ctr+'/'+questions_ctr));
+      addEventListener('beforeunload', ()=>{
+        localStorage.setItem('stored_score', points_ctr+'/'+questions_ctr);
+        localStorage.setItem('prev_question', prev_question);
+        localStorage.setItem('prev_answer', prev_answer);
+      });
     </script>
     <style>
       * {
