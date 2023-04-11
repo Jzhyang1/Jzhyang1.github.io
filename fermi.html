@@ -136,10 +136,10 @@
         if (correct_exponent - exponent == 0) {
           switch (side) {
             case "-":
-              is_correct = mantissa < correct_mantissa && correct_mantissa - mantissa <= 0.5;
+              is_correct = mantissa <= correct_mantissa && correct_mantissa - mantissa <= 0.5;
               break;
             case "+":
-              is_correct = mantissa > correct_mantissa && mantissa - correct_mantissa <= 0.5;
+              is_correct = mantissa >= correct_mantissa && mantissa - correct_mantissa <= 0.5;
               break;
             case "=":
               is_correct = Math.abs(mantissa - correct_mantissa) <= 0.2;
@@ -184,6 +184,7 @@
             document.getElementById("points").innerHTML = points_ctr;
             document.getElementById("questions").innerHTML = questions_ctr;
             document.getElementById("score").innerHTML = points_ctr / questions_ctr;
+            document.getElementById("display-question").innerHTML = prev_question
           }
           else {
             genQuestion();
