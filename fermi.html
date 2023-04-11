@@ -97,6 +97,9 @@
       
       let prev_question = "";
       let prev_answer = "";
+      
+      let waiting = false;
+      
       function genQuestion() {
         let q = questions[Math.floor(Math.random() * questions.length)];
         document.getElementById("display-question").innerHTML = prev_question = q[0];
@@ -107,6 +110,8 @@
         document.getElementById("entry-mantissa").focus();
       }
       async function nextQuestion() {
+        if(waiting) return;
+        
         let mantissa = document.getElementById("entry-mantissa").value;
         let exponent = document.getElementById("entry-exponent").value;
 
@@ -153,6 +158,7 @@
         } else {
           display.style.backgroundColor = "#661020";
         }
+        waiting = true;
         await new Promise((resolve) => setTimeout(resolve, 2000));
         display.style.background = "none";
         ++questions_ctr;
@@ -160,6 +166,7 @@
         document.getElementById("questions").innerHTML = questions_ctr;
         document.getElementById("score").innerHTML = points_ctr / questions_ctr;
 
+        waiting = false;
         genQuestion();
       }
       
@@ -178,8 +185,10 @@
             document.getElementById("questions").innerHTML = questions_ctr;
             document.getElementById("score").innerHTML = points_ctr / questions_ctr;
           }
+          else {
+            genQuestion();
+          }
         } catch(e){}
-        genQuestion();
       });
       addEventListener('beforeunload', ()=>{
         localStorage.setItem('stored_score', points_ctr+'/'+questions_ctr);
