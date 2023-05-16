@@ -108,7 +108,13 @@
 
         document.getElementById("entry-mantissa").value = "";
         document.getElementById("entry-exponent").value = "";
-        document.getElementById("entry-mantissa").focus();
+        
+        let req_mantissa = document.getElementById("toggle-require-mantissa").value == "require";
+        
+        if(req_mantissa)
+          document.getElementById("entry-mantissa").focus();
+        else
+          document.getElementById("entry-exponent").focus();
       }
       async function nextQuestion() {
         if(waiting) return;
@@ -454,9 +460,9 @@
             <span id="score">0</span>
           </h1>
           <label class="switch">
-            <label for="toggle-require-mantissa">Require Mantissa</label>
+            <label for="label-require-mantissa">Require Mantissa</label>
             <input type="checkbox" value="require" id="toggle-require-mantissa">
-            <span class="slider round"></span>
+            <span class="slider round" id="label-require-mantissa"></span>
           </label>
         </div>
 
