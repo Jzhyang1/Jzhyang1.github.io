@@ -109,7 +109,7 @@
         document.getElementById("entry-mantissa").value = "";
         document.getElementById("entry-exponent").value = "";
         
-        let req_mantissa = document.getElementById("toggle-require-mantissa").value == "require";
+        let req_mantissa = document.getElementById("toggle-require-mantissa").checked;
         
         if(req_mantissa)
           document.getElementById("entry-mantissa").focus();
@@ -118,7 +118,7 @@
       }
       async function nextQuestion() {
         if(waiting) return;
-        let req_mantissa = document.getElementById("toggle-require-mantissa").value == "require";
+        let req_mantissa = document.getElementById("toggle-require-mantissa").checked;
         
         let mantissa = document.getElementById("entry-mantissa").value;
         let exponent = document.getElementById("entry-exponent").value;
