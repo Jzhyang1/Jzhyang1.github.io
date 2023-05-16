@@ -30,7 +30,7 @@
         ["unit cell of iron", "3e-10-"],
         ["diameter of atom", "1e-10="],
         ["ATP molecule energy (J)", "1e-19="],
-        ["1 gram of ATP energy (J)", "5e5-"],
+        ["1 mole of ATP energy (J)", "5e5-"],
         ["1 liter of gasoline energy (J)", "3e7+"],
         ["atomic mass of iron (amu)", "5e1+"],
         ["atmoic mass of gold (amu)", "2e2="],
@@ -56,7 +56,9 @@
         ["number of human genes", "2e4+"],
         ["number of base pairs in a human cell", "3e9"],
         ["number of species in the amazon", "3e6"],
-        ["number of tree species in the amazon", "3e3"],
+        ["number of tree species in the amazon", "1e4"],
+        ["number of trees in the amazon", "4e11"],
+        ["number of trees cut down in the amazon in 2021", "5e8"],
         ["number of species in the ocean", "1e6"],
         ["number of fish in the sea", "4e12-"],
         ["diameter of a human cell", "1e-4"],
@@ -104,12 +106,13 @@
         document.getElementById("display-question").innerHTML = prev_question = q[0];
         prev_answer = q[1];
 
-        document.getElementById("entry-mantissa").value = 1;
-        document.getElementById("entry-exponent").value = 0;
+        document.getElementById("entry-mantissa").value = "";
+        document.getElementById("entry-exponent").value = "";
         document.getElementById("entry-mantissa").focus();
       }
       async function nextQuestion() {
         if(waiting) return;
+        let req_mantissa = document.getElementById("toggle-require-mantissa").value == "require";
         
         let mantissa = document.getElementById("entry-mantissa").value;
         let exponent = document.getElementById("entry-exponent").value;
@@ -133,18 +136,23 @@
 
         let is_correct = false;
         if (correct_exponent - exponent == 0) {
-          switch (side) {
-            case "-":
-              is_correct = mantissa <= correct_mantissa && correct_mantissa - mantissa <= 0.5;
-              break;
-            case "+":
-              is_correct = mantissa >= correct_mantissa && mantissa - correct_mantissa <= 0.5;
-              break;
-            case "=":
-              is_correct = Math.abs(mantissa - correct_mantissa) <= 0.2;
-              break;
-            default:
-              is_correct = Math.abs(mantissa - correct_mantissa) <= 2;
+          if(req_mantissa){
+            switch (side) {
+              case "-":
+                is_correct = mantissa <= correct_mantissa && correct_mantissa - mantissa <= 0.5;
+                break;
+              case "+":
+                is_correct = mantissa >= correct_mantissa && mantissa - correct_mantissa <= 0.5;
+                break;
+              case "=":
+                is_correct = Math.abs(mantissa - correct_mantissa) <= 0.2;
+                break;
+              default:
+                is_correct = Math.abs(mantissa - correct_mantissa) <= 2;
+            }
+          }
+          else {
+            is_correct = true;
           }
         }
         document.getElementById("display-question").innerHTML =
@@ -372,6 +380,68 @@
           opacity: 1;
         }
       }
+      /* The switch - the box around the slider */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+
+      /* Hide default HTML checkbox */
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      /* The slider */
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+
+      input:checked + .slider {
+        background-color: #2196F3;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+      }
+
+      input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
     </style>
   </head>
 
@@ -383,6 +453,10 @@
             Score : <span id="points">0</span> / <span id="questions">0</span> =
             <span id="score">0</span>
           </h1>
+          <label class="switch">
+            <input type="checkbox" value="require">
+            <span class="slider round">Count Mantissa</span>
+          </label>
         </div>
 
         <div class="game-question-container" id="container-question">
@@ -396,7 +470,7 @@
               id="entry-mantissa"
               name="entry"
               class="number"
-              value="0"
+              value=""
               onkeydown="if (event.keyCode == 13) document.getElementById('entry-exponent').focus()"
             />
             <label for="entry-mantissa" class="number" id="mantissa-label"
@@ -410,7 +484,7 @@
               id="entry-exponent"
               name="entry"
               class="number"
-              value="0"
+              value=""
               onkeydown="if (event.keyCode == 13) document.getElementById('button-submit').click()"
             />
             <label for="entry-exponent" class="number" id="exponent-label"
