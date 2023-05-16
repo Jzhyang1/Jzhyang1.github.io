@@ -141,25 +141,26 @@
         // );
 
         let is_correct = false;
-        if (correct_exponent - exponent == 0) {
-          if(req_mantissa){
-            switch (side) {
-              case "-":
-                is_correct = mantissa <= correct_mantissa && correct_mantissa - mantissa <= 0.5;
-                break;
-              case "+":
-                is_correct = mantissa >= correct_mantissa && mantissa - correct_mantissa <= 0.5;
-                break;
-              case "=":
-                is_correct = Math.abs(mantissa - correct_mantissa) <= 0.2;
-                break;
-              default:
-                is_correct = Math.abs(mantissa - correct_mantissa) <= 2;
-            }
+        if (correct_exponent - exponent == 0 && req_mantissa) {
+          switch (side) {
+            case "-":
+              is_correct = mantissa <= correct_mantissa && correct_mantissa - mantissa <= 0.5;
+              break;
+            case "+":
+              is_correct = mantissa >= correct_mantissa && mantissa - correct_mantissa <= 0.5;
+              break;
+            case "=":
+              is_correct = Math.abs(mantissa - correct_mantissa) <= 0.2;
+              break;
+            default:
+              is_correct = Math.abs(mantissa - correct_mantissa) <= 2;
           }
-          else {
-            is_correct = true;
-          }
+        }
+        else if (!req_mantissa)
+          is_correct = 
+            (correct_exponent - exponent == -1 && correct_mantissa <= 5 && mantissa >= 5) ||
+            (correct_exponent - exponent == 1 && correct_mantissa >= 5 && mantissa <= 5) ||
+            (correct_exponent - exponent == 0 && Math.abs(correct_mantissa - mantissa) <= 5);
         }
         document.getElementById("display-question").innerHTML =
           correct.join("x10^");
