@@ -29,7 +29,7 @@
         ["atmosphere (Pa)", "1e5="],
         ["unit cell of iron", "3e-10-"],
         ["diameter of atom", "1e-10="],
-        ["ATP molecule energy (J)", "1e-19="],
+        ["single ATP molecule energy (J)", "1e-19="],
         ["1 mole of ATP energy (J)", "5e5-"],
         ["1 liter of gasoline energy (J)", "3e7+"],
         ["atomic mass of iron (amu)", "5e1+"],
@@ -76,7 +76,7 @@
         ["paper thickness (m)", "1e-4="],
         ["number of words per pencil", "5e4-"],
         ["length of line by pencil (m)", "6e4-"],
-        ["length of line written by pen (m)", "1e3="],
+        ["length of line written by pen (m)", "4e3"],
         ["furlong (m)", "2e2="],
         ["firkin (kg)", "4e1="],
         ["fornight (s)", "1e6+"],
@@ -454,8 +454,9 @@
             <span id="score">0</span>
           </h1>
           <label class="switch">
-            <input type="checkbox" value="require">
-            <span class="slider round">Count Mantissa</span>
+            <label for="toggle-require-mantissa">Require Mantissa</label>
+            <input type="checkbox" value="require" id="toggle-require-mantissa">
+            <span class="slider round"></span>
           </label>
         </div>
 
