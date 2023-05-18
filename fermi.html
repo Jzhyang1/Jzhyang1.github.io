@@ -156,7 +156,7 @@
               is_correct = Math.abs(mantissa - correct_mantissa) <= 2;
           }
         }
-        else if (!req_mantissa)
+        else if (!req_mantissa) {
           is_correct = 
             (correct_exponent - exponent == -1 && correct_mantissa <= 5 && mantissa >= 5) ||
             (correct_exponent - exponent == 1 && correct_mantissa >= 5 && mantissa <= 5) ||
