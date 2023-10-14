@@ -294,6 +294,9 @@
         background: none;
         font-size: larger;
       }
+      mantissa-toggle-container {
+        width: 40%;
+      }
       span label {
         width: 100%;
         height: 100%;
@@ -460,11 +463,13 @@
             Score : <span id="points">0</span> / <span id="questions">0</span> =
             <span id="score">0</span>
           </h1>
-          <label class="switch">
-            <label for="label-require-mantissa">Require Mantissa</label>
-            <input type="checkbox" value="require" id="toggle-require-mantissa">
-            <span class="slider round" id="label-require-mantissa"></span>
-          </label>
+          <div class="mantissa-toggle-container">
+            <div for="label-require-mantissa">Require Mantissa</div>
+            <label class="switch">
+              <input type="checkbox" value="require" id="toggle-require-mantissa">
+              <span class="slider round" id="label-require-mantissa"></span>
+            </label>
+          </div>
         </div>
 
         <div class="game-question-container" id="container-question">
