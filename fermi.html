@@ -168,7 +168,7 @@
         
         let is_correct = false;
         
-        if(!req_mantissa) is_correct = mantissa === correct_mantissa; 
+        if(!req_mantissa) is_correct = exponent == correct_exponent; 
         else if(side === "-") is_correct = correct_fermi - fermi <= 0.3;
         else if(side === "+") is_correct = fermi - correct_fermi <= 0.3;
         else is_correct = abs(fermi - correct_fermi) <= 0.2;
