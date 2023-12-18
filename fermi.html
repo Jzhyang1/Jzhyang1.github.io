@@ -100,6 +100,7 @@
         ["radius of Solar System (m)", "1.5e14"],
         ["radius of Milky Way (ly)", "5e4"],
         ["Length of human DNA stretched out", "6e14"],
+        ["number of atoms in the universe", "1e81"],
       ];
       let questions = references.concat(bio).concat(chem).concat(phys);
 
@@ -110,9 +111,22 @@
       let prev_answer = "";
       
       let waiting = false;
+
+      function randomlog10factorial() {
+        let lim = Math.floor(Math.random() * 100);
+        let num = Math.ceil(lim - Math.sqrt(Math.random() * lim * lim)) * 5;
+        let ret = 0;
+        for(let i = 2; i <= num; ++i) {
+          ret += Math.log10(i);
+        }
+        let exponent = Math.floor(ret);
+        let mantissa = Math.round(Math.pow(10, ret - exponent));
+        return [`${num}!`, `${mantissa}e${exponent}`];
+      }
       
       function genQuestion() {
-        let q = questions[Math.floor(Math.random() * questions.length)];
+        let index = Math.floor(Math.random() * (1 + questions.length));
+        let q = index < questions.length ? questions[Math.floor(Math.random() * questions.length)] : randomlog10factorial();
         document.getElementById("display-question").innerHTML = prev_question = q[0];
         prev_answer = q[1];
 
