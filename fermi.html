@@ -144,8 +144,8 @@
         if(waiting) return;
         let req_mantissa = document.getElementById("toggle-require-mantissa").checked;
         
-        let mantissa = document.getElementById("entry-mantissa").value;
-        let exponent = document.getElementById("entry-exponent").value;
+        let mantissa = parseInt(document.getElementById("entry-mantissa").value);
+        let exponent = parseInt(document.getElementById("entry-exponent").value);
         let fermi = Math.round(Math.log10(mantissa) * 16)/16 + exponent;
 
         let side = prev_answer[prev_answer.length - 1];
