@@ -3,10 +3,17 @@
   <head>
     <title>Fermi Quizzer</title>
     <script>
-      let phys = [
-        ["boltzmann's constant", "1e-23+"],
+      let known = [
         ["electron charge", "1.6e-19="],
         ["speed of light", "3e8="],
+        ["electron mass", "9e-31="],
+        ["diameter of atom", "1e-10="],
+        ["avagadro's number", "6e23="],
+        ["universal gas constant", "8e0+"],
+        ["fornight (s)", "1e6+"],
+      ];
+      let phys = [
+        ["boltzmann's constant", "1e-23+"],
         ["universal gravitational constant", "7e-11-"],
         ["planck's constant", "6.63e-34="],
         ["permittivity", "8.85e-12="],
@@ -21,14 +28,10 @@
         ["frequency of red light", "4e14+"],
       ];
       let chem = [
-        ["electron mass", "9e-31="],
         ["unified atomic mass (kg)", "2e-27-"],
         ["proton mass", "2e-27-"],
-        ["avagadro's number", "6e23="],
-        ["universal gas constant", "8e0+"],
         ["atmosphere (Pa)", "1e5="],
         ["unit cell of iron", "3e-10-"],
-        ["diameter of atom", "1e-10="],
         ["single ATP molecule energy (J)", "1e-19="],
         ["1 mole of ATP energy (J)", "5e5-"],
         ["1 liter of gasoline energy (J)", "3e7+"],
@@ -70,6 +73,24 @@
         ["number of birds", "5e10"],
         ["number of feathers on a chicken", "1e4"],
       ];
+      let astro = [
+        ["Radius of universe (ly)", "5e10-"],
+        ["Earth to Sun (m)", "1.5e11"],
+        ["Neptune to Sun (m)", "4.5e12"],
+        ["radius of Solar System (m)", "1.5e14"],
+        ["radius of Milky Way (ly)", "5e4"],
+        ["number of atoms in the universe", "1e81"],
+        ["mass of Moon (kg)", "7e22+"],
+        ["radius of Moon (m)", "1.7e6+"],
+        ["mass of Earth (kg)", "6e24="],
+        ["mass of Jupiter (kg)", "1.9e27="],
+        ["radius of Jupiter (m)", "7e7="],
+        ["radius of Neptune (m)", "2.5e7="],
+        ["mass of Neptune (kg)", "1e26="],
+        ["distance of Neptune (au)", "3e1"],
+        ["number of stars in Milky Way", "2e11"],
+        ["number of visible stars", "3e3"],
+      ];
       let references = [
         ["Olympic swimming pool (L)", "3e6-"],
         ["Giza (m^3)", "3e6-"],
@@ -79,7 +100,6 @@
         ["length of line written by pen (m)", "4e3"],
         ["furlong (m)", "2e2="],
         ["firkin (kg)", "4e1="],
-        ["fornight (s)", "1e6+"],
         ["furlongs per fortnight (m/s)", "2e-4-"],
         ["shipping container volume (m^3)", "3e1+"],
         ["air per breath (L)", "6e-1"],
@@ -94,13 +114,7 @@
         ["oil barrel (L)", "1.6e2"],
         ["empire state building (m)", "4.8e2"],
         ["empire state building (kg)", "3.5e8"],
-        ["Radius of universe (ly)", "5e10-"],
-        ["Earth to Sun (m)", "1.5e11"],
-        ["Neptune to Sun (m)", "4.5e12"],
-        ["radius of Solar System (m)", "1.5e14"],
-        ["radius of Milky Way (ly)", "5e4"],
         ["Length of human DNA stretched out", "6e14"],
-        ["number of atoms in the universe", "1e81"],
       ];
       let questions = references.concat(bio).concat(chem).concat(phys);
 
@@ -125,7 +139,7 @@
       }
       
       function genQuestion() {
-        let index = Math.floor(Math.random() * (1 + questions.length));
+        let index = Math.floor(Math.random() * (3 + questions.length));
         let q = index < questions.length ? questions[Math.floor(Math.random() * questions.length)] : randomlog10factorial();
         document.getElementById("display-question").innerHTML = prev_question = q[0];
         prev_answer = q[1];
@@ -157,14 +171,6 @@
         let correct_mantissa = parseInt(correct[0]);
         let correct_exponent = parseInt(correct[1]);
         let correct_fermi = Math.round(Math.log10(correct_mantissa) * 16)/16 + correct_exponent;
-
-        // console.log(
-        //   "recieved:%d e%d; correct:%f e %d",
-        //   mantissa,
-        //   exponent,
-        //   correct_exponent,
-        //   correct_exponent
-        // );
         
         let is_correct = false;
         
