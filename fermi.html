@@ -175,10 +175,10 @@
         let is_correct = false;
         
         if(!req_mantissa) is_correct = exponent == correct_exponent; 
-        else if(side === "-") is_correct = correct_fermi - fermi >= 0 && correct_fermi - fermi <= 0.3;
-        else if(side === "+") is_correct = fermi - correct_fermi >= 0 && fermi - correct_fermi <= 0.3;
-        else if(side === "=") is_correct = Math.abs(fermi - correct_fermi) <= 0.2;
-        else is_correct = Math.abs(fermi - correct_fermi) <= 0.3 || exponent == correct_exponent && Math.abs(mantissa - correct_mantissa) < 3;
+        else if(side === "-") is_correct = correct_fermi - fermi >= 0 && correct_fermi - fermi <= 0.31;
+        else if(side === "+") is_correct = fermi - correct_fermi >= 0 && fermi - correct_fermi <= 0.31;
+        else if(side === "=") is_correct = Math.abs(fermi - correct_fermi) <= 0.25;
+        else is_correct = Math.abs(fermi - correct_fermi) <= 0.31 || exponent == correct_exponent && Math.abs(mantissa - correct_mantissa) < 3;
           
         document.getElementById("display-question").innerHTML =
           correct.join("x10^");
