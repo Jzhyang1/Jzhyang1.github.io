@@ -28,12 +28,9 @@ import projects from "../data/projects.json"
 				</a>
 				<div id="projects-list" class="dropdown-list">
 					{
-						projects.map((p)=>(
-						<a class="dropdown-item" href={p.href}>
-							<span>{p.organization}</span>
-							{p.date.includes("Present") ? 
-								<span class="primary pill">{p.date}</span> : 
-								<span class="secondary pill">{p.date}</span>}
+						projects.filter((p)=>p.date.includes("Present")).map((p)=>(
+						<a class="dropdown-item" href={p.href ?? '/projects'}>
+							{p.organization}
 						</a>))
 					}
 					<a href="/projects">SEE ALL</a>
@@ -165,12 +162,12 @@ import projects from "../data/projects.json"
 	let lastScrollY = window.scrollY;
 	window.addEventListener('scroll', () => {
 		if (!menubar || !menutoggle) return;
-		if (window.scrollY < 50 || window.scrollY < lastScrollY) {
-			menutoggle.classList.remove('show');
-			menubar.classList.remove('show');
-		} else if (window.scrollY > 50) {
+		if (window.scrollY > 50) {
 			menutoggle.classList.add('show');
 			menubar.classList.add('show');
+		} else if (window.scrollY < 50 || (window.scrollY < lastScrollY && window.scrollY + 5 < window.outerHeight)) {
+			menutoggle.classList.remove('show');
+			menubar.classList.remove('show');
 		} 
 		lastScrollY = window.scrollY;
 	});

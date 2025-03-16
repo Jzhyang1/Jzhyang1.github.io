@@ -16,8 +16,12 @@
   .shell {
     display: flex;
     flex-direction: column;
-    height: 300px;
-    width: 350px;
+    width: 50%;
+    min-width: 350px;
+    max-width: 50vw;
+    height: 70%;
+    min-height: 300px;
+    max-height: 60vh;
     color: #fff;
     font-family: monospace;
   }
@@ -44,9 +48,11 @@
   .output {
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   input {
+    flex: 1;
     background: none;
     border: none;
     color: #fff;
@@ -98,7 +104,7 @@
         return;
     }
 
-    const args = command.split(' ');
+    const args = command.match(/(?:[^\s"]+|"[^"]*")+/g)?.map(e => e.replaceAll('"', '')) ?? [];
     const cmd = args[0];
     const params = args.slice(1);
 
@@ -110,7 +116,10 @@
         const dirPath = params.length ? calculatePath(params[0]) : currentPath
         if (dirPath) {
           const dir = directoryAt(dirPath);
-          appendOutput((Array.isArray(dir) ? dir.map((e)=>e.organization) : Object.keys(dir)).join('\u2003'));
+          appendOutput(
+            (Array.isArray(dir) ? dir.map((e)=>e.organization) : Object.keys(dir))
+              .map(e=>(e as string).includes(' ') ? `"${e}"` : e)
+              .join('\u2003\u2003'));
         } else {
           appendOutput(`ls ${params[0]}: No such directory`);
         }
@@ -136,7 +145,7 @@
           currentPath = newPath;
           currentPathElement.textContent = `/${currentPath.join('/')} $ `;
         } else {
-          appendOutput(`cd ${params[0]}: No such file or directory`);
+          appendOutput(`cd ${params[0]}: No such directory`);
         }
         break;
       case 'clear':

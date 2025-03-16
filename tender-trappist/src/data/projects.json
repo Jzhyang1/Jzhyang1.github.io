@@ -1,68 +1,68 @@
 [
-    {
-        "organization": "Concurrency Libraries",
-        "categories": ["Multiprocess", "Multithread", "Libraries"],
-        "date": "Feb 2025 - Mar 2025",
-        "summary": "A collection of C libraries for memory allocation and coroutine orchestration in multiprocess (via shared mmap memory) and multithread processes."
-    },
-    {
-        "organization": "Fun-Lang",
-        "categories": ["Programming Language", "Compiler", "Interpreter"],
-        "date": "Feb 2025",
-        "summary": "A toy programming language (small subset of Python) where I experimented with just-in-time compilation and various compiler optimizations."
-    },
-    {
-        "organization": "ARM64 decomplier and emulator",
-        "categories": ["Assembly"],
-        "date": "Feb 2025",
-        "summary": "A toy emulator that can emulate and output human-readable assembly for ARM64 on x64 devices."
-    },
-    {
-        "organization": "Monomer",
-        "href": "https://monomer.dev/",
-        "categories": ["Programming Language", "Compiler", "Interpreter"],
-        "date": "Nov 2020 - Present",
-        "summary": "General purpose programming language."
-    },
-    {
-        "organization": "Esindeen",
-        "href": "https://esindeen.com/",
-        "categories": ["Web app", "Cloud"],
-        "date": "Feb 2024 - Present",
-        "summary": "Online college application essay tracker."
-    },
-    {
-        "organization": "MERL",
-        "href": "https://sites.google.com/view/meerl",
-        "categories": ["Programming Language", "Preprocessor", "Interpreter"],
-        "date": "May 2020 - Nov 2020",
-        "summary": "General purpose programming language."
-    },
-    {
-        "organization": "Fermi Guesser",
-        "href": "https://jzhyang.com/old/games/fermi.html",
-        "categories": ["Web app"],
-        "date": "Jan 2023 - May 2023",
-        "summary": "Science Olympiad memorization tool."
-    },
-    {
-        "organization": "Forbidden Island",
-        "href": "https://jzhyang.com/old/ForbiddenIsland.html",
-        "categories": ["Game", "Java Swing"],
-        "date": "Sept 2022 - Dec 2022",
-        "summary": "High school."
-    },
-    {
-        "organization": "Snake Game",
-        "href": "https://jzhyang.com/old/games/snake/TraditionalSnake.html",
-        "categories": ["Game", "Web app"],
-        "date": "Sept 2023",
-        "summary": "High school web game project."
-    },
-    {
-        "organization": "Autoschedule",
-        "date": "Jan 2020",
-        "categories": ["Windows Desktop Application", "Scripting language"],
-        "summary": "Fully native Windows command bundler for temporal organization."
-    }
+  {
+    "organization": "Concurrency Libraries",
+    "categories": ["Multiprocess", "Multithread", "Libraries"],
+    "date": "Feb 2025 - Mar 2025",
+    "summary": "A collection of C libraries for memory allocation and coroutine orchestration in multiprocess (via shared mmap memory) and multithread processes."
+  },
+  {
+    "organization": "Fun-Lang",
+    "categories": ["Programming Language", "Compiler", "Interpreter"],
+    "date": "Feb 2025",
+    "summary": "A toy programming language (small subset of Python) where I experimented with just-in-time compilation and various compiler optimizations."
+  },
+  {
+    "organization": "ARM64 decomplier and emulator",
+    "categories": ["Assembly"],
+    "date": "Feb 2025",
+    "summary": "An emulator that runs a subset of the ARM64 architecture on x86 computers as well as outputs human-readable assembly for ARM64 binaries."
+  },
+  {
+    "organization": "Monomer",
+    "href": "https://monomer.dev/",
+    "categories": ["Programming Language", "Compiler", "Interpreter"],
+    "date": "Nov 2020 - Present",
+    "summary": "General purpose programming language."
+  },
+  {
+    "organization": "Esindeen",
+    "href": "https://esindeen.com/",
+    "categories": ["Web app", "Cloud"],
+    "date": "Feb 2024 - Aug 2024",
+    "summary": "Online college application essay tracker."
+  },
+  {
+    "organization": "MERL",
+    "href": "https://sites.google.com/view/meerl",
+    "categories": ["Programming Language", "Preprocessor", "Interpreter"],
+    "date": "May 2020 - Nov 2020",
+    "summary": "General purpose programming language."
+  },
+  {
+    "organization": "Fermi Guesser",
+    "href": "https://jzhyang.com/old/games/fermi.html",
+    "categories": ["Web app"],
+    "date": "Jan 2023 - May 2023",
+    "summary": "Science Olympiad memorization tool."
+  },
+  {
+    "organization": "Forbidden Island",
+    "href": "https://jzhyang.com/old/ForbiddenIsland.html",
+    "categories": ["Game", "Java Swing"],
+    "date": "Sept 2022 - Dec 2022",
+    "summary": "High school."
+  },
+  {
+    "organization": "Snake Game",
+    "href": "https://jzhyang.com/old/games/snake/TraditionalSnake.html",
+    "categories": ["Game", "Web app"],
+    "date": "Sept 2023",
+    "summary": "High school web game project."
+  },
+  {
+    "organization": "Autoschedule",
+    "date": "Jan 2020",
+    "categories": ["Windows Desktop Application", "Scripting language"],
+    "summary": "Fully native Windows command bundler for temporal organization."
+  }
 ]
