@@ -1,0 +1,108 @@
+---
+import background from '../assets/background.svg';
+import ScrollTimeline from './ScrollTimeline.astro';
+import projects from "../data/projects.json"
+---
+
+<div id="container">
+	<img id="background" src={background.src} alt="" fetchpriority="high" />
+	<main>
+		<section id="projects">
+			<ScrollTimeline items={projects} />
+		</section>
+	</main>
+</div>
+
+<style>
+	#background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		filter: blur(15px);
+	}
+
+	#container {
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		display: flex;
+		flex-direction: row;
+	}
+
+	main {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		justify-content: center;
+	}
+
+	h2 {
+		margin: 0 0 1em;
+		font-weight: normal;
+		color: #111827;
+		font-size: 20px;
+	}
+
+	p {
+		color: #4b5563;
+		font-size: 16px;
+		line-height: 24px;
+		letter-spacing: -0.006em;
+		margin: 0;
+	}
+
+	a {
+		display: flex;
+		align-items: center;
+		padding: 10px 12px;
+		color: #111827;
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	a:hover {
+		color: rgb(78, 80, 86);
+	}
+
+	.box {
+		padding: 16px;
+		background: rgba(255, 255, 255, 1);
+		border-radius: 16px;
+		border: 1px solid white;
+	}
+
+	#about {
+		flex: 1;
+		margin: 20px;
+		flex-direction: column;
+		max-width: 300px;
+		text-decoration: none;
+		transition: background 0.2s;
+		background-color: rgba(#4b5563, 0.5);
+		box-shadow: 2px 5px 4px #45474F;
+	}
+
+	#about:hover {
+		background-color: rgba(255, 255, 255, 0.55);
+	}
+
+	@media screen and (max-width: 768px) {
+		#container {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#hero {
+			display: block;
+			width: 100%;
+			padding-top: 10%;
+		}
+
+		#affiliations {
+			margin-left: 5px;
+			margin-right: 5px;
+		}
+	}
+</style>

@@ -1,0 +1,241 @@
+---
+import background from '../assets/background.svg';
+import github from '../assets/github.svg';
+import instagram from '../assets/instagram.svg';
+import linkedin from '../assets/linkedin.svg';
+import discord from '../assets/discord.svg';
+import BioIntro from './BioIntro.astro';
+import Shell from './Shell.astro';
+import Gallery from './GalleryContent.astro';
+---
+
+<div id="container">
+	<img id="background" src={background.src} alt="" fetchpriority="high" />
+	<main>
+		<section id="hero">
+			<div class="vertical-group">
+				<h1>Jonathan Yang</h1>
+				<section id="contact">
+					<a href="mailto://jonathan.j.yang@utexas.edu">jonathan.j.yang@utexas.edu</a>
+					<a>1(281)919-7492</a>
+				</section>
+				<section id="links">
+					<a href="https://github.com/Jzhyang1">
+						<img id="github" src={github.src} alt="" />
+						jzhyang1
+					</a>
+					<a href="https://www.linkedin.com/in/jzhyang">
+						<img id="linkedin" src={linkedin.src} alt="" />
+						jzhyang
+					</a>
+					<a href="https://discord.com/">
+						<img id="discord" src={discord.src} alt="" />
+						@joncadence
+					</a>
+					<a href="https://www.instagram.com/jzhyang1">
+						<img id="instagram" src={instagram.src} alt="" />
+						jzhyang1
+					</a>
+				</section>
+			</div>
+		</section>
+		<section id="shell">
+			<h2>Query My Website</h2>
+			<Shell/>
+		</section>
+	</main>
+
+	<div id="side-column">
+		<div id="about-me" class="box">
+			<BioIntro/>
+		</div>
+		<div id="gallery" class="box">
+			<h4>Recent Artworks</h4>
+			<Gallery/>
+		</div>
+	</div>
+</div>
+
+<style>
+	#background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		filter: blur(15px);
+	}
+
+	@font-face {
+		font-family: 'Fredricka';
+		src: url('/fonts/FrederickatheGreat.woff2') format('woff2');
+		font-weight: normal;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	#container {
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		height: 100%;
+		display: flex;
+		flex-direction: row;
+	}
+
+	main {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+	}
+
+	#hero {
+		height: 100vh;
+		min-height: 100vh;
+	}
+
+	.vertical-group {
+		margin-top: 30%;
+		margin-left: 10%;
+		display: flex;
+		align-items: start;
+		flex-direction: column;
+		justify-content: center;
+		padding: 16px;
+	}
+
+	#shell {
+        display: flex;
+		flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+		min-height: 100vh;
+	}
+
+	#contact {
+		display: flex;
+		gap: 20px;
+	}
+
+	#links {
+		background-color: rgba(#4b5563, 0.5);
+		border-radius: 15px;
+		display: flex;
+		gap: 16px;
+	}
+
+	#links a img {
+		height: 1.5em;
+		margin-right: 6px;
+	}
+
+	pre {
+		font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
+			'DejaVu Sans Mono', monospace;
+		font-weight: normal;
+		/* background: linear-gradient(14deg, #9899a3 0%, #b0c1cf 100%); */
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		margin: 0;
+	}
+
+	h1 {
+		font-size: 5em;
+		font-family: 'Fredricka', sans-serif;
+	}
+	
+	h2 {
+		font-size: 3em;
+		font-family: 'Fredricka', sans-serif;
+	}
+
+	h4 {
+		font-size: 32px;
+		margin: 5px;
+	}
+
+	p {
+		color: #4b5563;
+		font-size: 16px;
+		line-height: 24px;
+		letter-spacing: -0.006em;
+		margin: 0;
+	}
+
+	a {
+		display: flex;
+		align-items: center;
+		padding: 10px 12px;
+		color: #111827;
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	a:hover {
+		color: rgb(78, 80, 86);
+	}
+
+	#side-column {
+		flex: 0.5;
+		display: flex;
+		margin: 20px;
+		flex-direction: column;
+		max-width: 400px;
+		gap: 40px;
+	}
+
+	#about-me {
+		min-height: 90vh;
+	}
+
+	.box {
+		position: relative;
+		text-decoration: none;
+		box-shadow: 2px 5px 4px #45474F;
+		padding: 26px;
+		background: rgba(255, 255, 255, 1);
+		border-radius: 16px;
+		border: 1px solid white;
+	}
+
+	@media screen and (max-width: 768px) {
+		#container {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#hero {
+			display: block;
+			padding-top: 10%;
+		}
+
+		h1 {
+			font-size: 48px;
+		}
+
+		#links {
+			flex-wrap: wrap;
+		}
+
+		#contact {
+			flex-wrap: wrap;
+		}
+
+		#links a.button {
+			padding: 14px 18px;
+		}
+
+		.box {
+			margin-left: 16px;
+			margin-right: 16px;
+			bottom: 2.5rem;
+			max-width: 100%;
+			box-shadow: none;
+		}
+
+		#shell {
+			display: none;
+		}
+	}
+</style>

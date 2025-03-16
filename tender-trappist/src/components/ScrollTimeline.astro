@@ -1,0 +1,157 @@
+---
+const {items} = Astro.props;
+---
+
+<div class="timeline">
+  {items.map((item:any) => (
+    <div class="timeline-item">
+      <div class="timeline-item-content">
+        <div class="group">
+            <h6>{item.position} </h6>
+            <div class="date">{item.date}</div>
+        </div>
+        <div class="group">
+            {item.department && <div class="department">{item.department}</div>}
+            <div class="location">{item.location}</div>
+        </div>
+        <div class="group">
+          <h6>{'href' in item ? <a href={item.href} target="_blank">{item.organization}</a> : item.organization}</h6>
+          <div class="categories">
+            {item.categories.map((category: string) => (
+              <span class="category">{category}</span>
+            ))}
+          </div>
+        </div>
+        
+        <div class="summary">{item.summary}</div>
+      </div>
+      <div class="timeline-item-title">
+        {item.image && <img src={item.image} alt={item.organization} />}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+  
+    .timeline-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 600px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline-item-content .group {
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        gap: 5px;
+    }
+  
+    .timeline-item-content {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .timeline-item-content a:hover {
+      text-decoration: underline;
+    }
+  
+    .timeline-item-content h6 {
+      max-width: 70%;
+      font-size: 1.1em;
+      margin: 5px 0;
+    }
+
+    .timeline-item-content .department {
+      align-self: center;
+      font-size: 0.9em;
+    }
+  
+    .timeline-item-content .date,
+    .timeline-item-content .location {
+      align-self: center;
+      font-size: 0.9em;
+      color: #666;
+    }
+  
+    .timeline-item-content .summary {
+      margin-top: 10px;
+      font-size: 0.8em;
+    }
+    
+    .timeline-item-content a {
+      color: #678baa;
+      text-decoration: none;
+    }
+    
+    .timeline-item-title {
+        align-items: center;
+        margin-top: 5px;
+        padding-top: 5px;
+        border-top: 1px solid black;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+  
+    .timeline-item img {
+        max-height: 70px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 20%;
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row-reverse;
+      gap: 5px;
+      font-size: 0.8em;
+    }
+
+    .category {
+      background-color: #678baa;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 0.8em;
+    }
+
+    
+	@media screen and (max-width: 768px) {
+		.timeline-item-content h6 {
+            font-size: 0.4em;
+		}
+
+        .timeline-item-content .date,
+        .timeline-item-content .location {
+            align-self: center;
+            font-size: 0.4em;
+            color: #666;
+        }
+        .timeline-item-content .department {
+            font-size: 0.4em;
+        }
+        .timeline-item-content .summary {
+            font-size: 0.3em;
+        }
+        .timeline-item img {
+            max-height: 40px;
+        }
+	}
+  </style>

@@ -1,0 +1,69 @@
+<div id="profile-container">
+    <h2>About Me</h2>
+    <div id="bio-intro">
+        <img id="profile" src="/portrait.png" alt="" fetchpriority="high" />
+        <div id="content">
+            <p>
+                I am pursuing a BS in Computer Science as a Turing Scholar at the
+                University of Texas at Austin.
+            </p>
+            <p>
+                My academic interests are centered around <b>Compilers</b> and <b>Concurrency</b>.
+                I am expanding <a href="https://monomer.dev">Monomer</a> (my programming
+                language) to natively support concurrency.
+            </p>
+            <p>
+                I hope to make meaningful contributions in the software development
+                cycle.
+            </p>
+            <p>
+                Outside of academics, I have been playing the piano for 13 years. My
+                favorite composition is Beethoven’s Appassionata (though my favorite
+                composer is Liszt). I also draw. I try to post my more recent drawings
+                on <a href="/gallery">this site</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    #profile-container {
+        display: block;
+        min-width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+        justify-items: center;
+        container-type: inline-size; /* Allows the element to be a query container */
+        container-name: bio-intro-container; /* Name the container for later reference in queries */
+    }
+
+    #profile {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        border-radius: 20px;
+    }
+
+    #bio-intro {
+        display: flex;
+        flex-direction: column; /* Default layout is column */
+        align-items: center;
+    }
+
+    /* Container query based on the size of #bio-intro */
+    @container bio-intro-container (min-width: 500px) {
+        #bio-intro {
+            flex-direction: row; /* Switch layout to row when the container is wide enough */
+            align-items: flex-start; /* Align image and content side by side */
+            font-size: large;
+        }
+
+        #profile {
+            width: 230px; /* Adjust image size for wider container */
+            border-radius: 10px;
+            margin-right: 40px; /* Add space between the image and text */
+        }
+    }
+</style>

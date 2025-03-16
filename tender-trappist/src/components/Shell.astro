@@ -1,0 +1,169 @@
+---
+---
+
+<div class="shell">
+  <div id="topbar" class="topbar">/</div>
+  <div id="shell-content" class="shell-content">
+    <div id="output" class="output"></div>
+    <form id="shell-form">
+      <span id="current-path">/ $ </span>
+      <input id="command-input" type="text" />
+    </form>
+  </div>
+</div>
+
+<style>
+  .shell {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    width: 350px;
+    color: #fff;
+    font-family: monospace;
+  }
+
+  .shell-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background: #000;
+    padding: 20px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  .topbar {
+    background-color: #444;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;;
+  }
+
+  .output {
+    display: flex;
+    flex-direction: column;
+  }
+
+  input {
+    background: none;
+    border: none;
+    color: #fff;
+    outline: none;
+    font-family: monospace;
+  }
+</style>
+
+<script>
+  import pages, {type Directory} from "../data/importer"
+
+  let currentPath: string[] = [];
+
+  const topbarElement = document.getElementById('topbar');
+  const selectableElement = document.getElementById('shell-content');
+  const outputElement = document.getElementById('output');
+  const commandInput = document.getElementById('command-input') as HTMLInputElement;
+  const shellForm = document.getElementById('shell-form');
+  const currentPathElement = document.getElementById('current-path');
+
+  const calculatePath = (path: string) => {
+    const ret = path.startsWith('/') ? [] : new Array(...currentPath);
+
+    for (const change of path.split('/').filter(Boolean)){
+      const dir = ret.reduce((cur, s)=>cur[s] as Directory, pages)
+      if (change === '..' && ret.length > 0) {
+        ret.pop();
+      } else if (change === '.') {
+        //do nothing
+      } else if (Object.keys(dir).includes(change) && typeof(dir[change]) === 'object') {
+        ret.push(change);
+      } else {
+        return null;
+      }
+    }
+    return ret;
+  } 
+
+  const directoryAt = (path: string[]): Directory | Directory[] => {
+    return path.reduce((cur, s)=> (
+          Array.isArray(cur) ? cur.find((val) => val['organization'] === s) :
+          typeof(cur) === 'object' ? cur[s] : ''
+        ), pages);
+  }
+
+  const handleCommand = (command: string) => {
+    if (!(outputElement && commandInput && topbarElement && currentPathElement)) {
+      console.log('missing an element')
+        return;
+    }
+
+    const args = command.split(' ');
+    const cmd = args[0];
+    const params = args.slice(1);
+
+    switch (cmd) {
+      case 'echo':
+        appendOutput(params.join(' '));
+        break;
+      case 'ls':{
+        const dirPath = params.length ? calculatePath(params[0]) : currentPath
+        if (dirPath) {
+          const dir = directoryAt(dirPath);
+          appendOutput((Array.isArray(dir) ? dir.map((e)=>e.organization) : Object.keys(dir)).join('\u2003'));
+        } else {
+          appendOutput(`ls ${params[0]}: No such directory`);
+        }
+        break;
+      }
+      case 'cat':{
+        const filePath = params[0];
+        const fileName = filePath.substring(filePath.lastIndexOf('/') + 1)
+        const findPath = calculatePath(filePath.substring(0, filePath.lastIndexOf('/')));
+
+        const dir = findPath ? directoryAt(findPath) : {};
+        const file = Array.isArray(dir) ? dir.find((e)=>e.organization === fileName) : dir[fileName];
+        if (file) {
+          appendOutput(typeof(file) === 'object' ? JSON.stringify(file) : file.toString());
+        } else {
+          appendOutput(`cat ${params[0]}: No such file or directory`);
+        }
+        break;
+      }
+      case 'cd':
+        const newPath = calculatePath(params[0])
+        if (newPath) {
+          currentPath = newPath;
+          currentPathElement.textContent = `/${currentPath.join('/')} $ `;
+        } else {
+          appendOutput(`cd ${params[0]}: No such file or directory`);
+        }
+        break;
+      case 'clear':
+        outputElement?.replaceChildren();
+        break;
+      default:
+        appendOutput(`${cmd}: command not found`);
+    }
+  };
+
+  const appendOutput = (text: string) => {
+    const div = document.createElement('div');
+    div.textContent = text;
+    outputElement?.appendChild(div);
+  };
+
+  shellForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const command = commandInput?.value;
+    handleCommand(command);
+    if (commandInput) {
+        commandInput.value = '';
+    }
+  });
+
+  selectableElement?.addEventListener('click', (e) => {
+    e.preventDefault();
+    commandInput.focus();
+  })
+</script>

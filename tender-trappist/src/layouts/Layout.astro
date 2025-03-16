@@ -1,0 +1,204 @@
+---
+import projects from "../data/projects.json"
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Jonathan Yang</title>
+	</head>
+	<body>
+        <div class="menu-icon" id="layout-menutoggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <nav class="layout-menubar" id="layout-menubar">
+            <a href="/">Home</a>
+            <a href="/bio">Biography</a>
+            <a href="/exp">Experience</a>
+            <a href="/gallery">Gallery</a>
+			<div class="dropdown">
+				<a id="projects-toggle" class="dropdown-toggle">
+					Projects
+				</a>
+				<div id="projects-list" class="dropdown-list">
+					{
+						projects.map((p)=>(
+						<a class="dropdown-item" href={p.href}>
+							<span>{p.organization}</span>
+							{p.date.includes("Present") ? 
+								<span class="primary pill">{p.date}</span> : 
+								<span class="secondary pill">{p.date}</span>}
+						</a>))
+					}
+					<a href="/projects">SEE ALL</a>
+				</div>
+			</div>
+            <a href="/Resume.pdf" target="_blank">Resume</a>
+        </nav>
+        <slot />
+    </body>
+</html>
+
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.layout-menubar {
+		display: flex;
+		position: fixed;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		background-color: #333;
+		color: white;
+		z-index: 1000;
+		transition: left 0.3s ease-in-out;
+	}
+	.layout-menubar.show {
+		padding-left: 50px;
+		justify-content: start;
+		left: 0;
+	}
+	.layout-menubar a {
+		color: white;
+		text-decoration: none;
+		padding: 15px 15px;
+		display: block;
+	}
+	.layout-menubar a:hover {
+		background-color: #575757;
+	}
+	.menu-icon {
+		position: fixed;
+		top: 10px;
+		left: 10px;
+		cursor: pointer;
+		z-index: 1001;
+	}
+	.menu-icon div {
+		width: 25px;
+		height: 3px;
+		background-color: #333;
+		margin: 5px 0;
+	}
+	.menu-icon.show div {
+		background-color: #fff;
+	}
+	.dropdown {
+		display: flex;
+        position: relative;
+		height: fit-content
+    }
+    .dropdown-list {
+        display: none;
+        position: absolute;
+		top: 50px;
+        background-color: #333;
+		width: 300px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+		flex-direction: column;
+    }
+    .dropdown-list a {
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    .dropdown-list a:hover {
+        background-color: #575757;
+    }
+	.dropdown.show .dropdown-list {
+		display: flex;
+	}
+    .pill {
+		color: white;
+		padding: 5px 10px;
+		border-radius: 10px;
+		font-size: 0.8em;
+    }
+	.pill.primary {
+		background-color: #678bdd;
+	}
+	.pill.secondary {
+		background-color: #677b8a;
+	}
+	@media screen and (max-width: 768px) {
+		.layout-menubar {
+			justify-content: space-around;
+			flex-direction: column;
+		}
+		.layout-menubar a {
+			display: inline;
+		}
+	}
+</style>
+
+<script>
+	const menubar = document.getElementById('layout-menubar');
+    const menutoggle = document.getElementById('layout-menutoggle');
+
+	//toggling menubar visibility
+	menutoggle?.addEventListener('click', () => {
+		console.log("toggling");
+		if (!menubar || !menutoggle) return;
+		console.log("still toggling");
+		if (menubar.classList.contains('show')) {
+			menutoggle.classList.remove('show');
+			menubar.classList.remove('show');
+		} else {
+			menutoggle.classList.add('show');
+			menubar.classList.add('show');
+		}
+	});
+
+	let lastScrollY = window.scrollY;
+	window.addEventListener('scroll', () => {
+		if (!menubar || !menutoggle) return;
+		if (window.scrollY < 50 || window.scrollY < lastScrollY) {
+			menutoggle.classList.remove('show');
+			menubar.classList.remove('show');
+		} else if (window.scrollY > 50) {
+			menutoggle.classList.add('show');
+			menubar.classList.add('show');
+		} 
+		lastScrollY = window.scrollY;
+	});
+
+
+	const projectsToggle = document.getElementById('projects-toggle');
+    const projectsList = document.getElementById('projects-list');
+
+    // Toggling dropdown visibility
+    projectsToggle?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const dropdown = projectsToggle.parentElement;
+		if (!dropdown) return;
+
+        if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        } else {
+            dropdown.classList.add('show');
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+		if (!projectsToggle || !projectsList) return;
+
+        if (!projectsToggle.contains(e.target as Node) && 
+			!projectsList.contains(e.target as Node)) {
+            projectsToggle.parentElement?.classList.remove('show');
+        }
+    });
+</script>
