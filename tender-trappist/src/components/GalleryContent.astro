@@ -1,6 +1,7 @@
 ---
 import background from '../assets/background.svg';
-const images = import.meta.glob('../public/artworks/*.{jpg,jpeg,png,gif,JPG,JPEG,PNG,GIF}', { eager: false });
+
+const images = import.meta.glob('/public/artworks/*.{jpg,jpeg,png,gif,JPG,JPEG,PNG,GIF}', { eager: true });
 const imagePaths = Object.keys(images).map((path) => path.replace('/public', ''));
 ---
 
