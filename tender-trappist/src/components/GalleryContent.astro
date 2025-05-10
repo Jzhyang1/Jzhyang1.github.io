@@ -1,8 +1,15 @@
 ---
 import background from '../assets/background.svg';
 
-const images = import.meta.glob('/public/artworks/*.{jpg,jpeg,png,gif,JPG,JPEG,PNG,GIF}', { eager: true });
-const imagePaths = Object.keys(images).map((path) => path.replace('/public', ''));
+const imagePaths = [
+    '/artworks/archway.jpg',
+    '/artworks/dog_pearl.jpg',
+    '/artworks/pineapple.jpg',
+    '/artworks/cats.jpg',
+    '/artworks/cow.jpg',
+    '/artworks/plate.jpg',
+    '/artworks/snowmen.jpg'
+];
 ---
 
 <div class="container">
