@@ -22,12 +22,14 @@ async function getPokemonByName(name) {
         if (current_evolution.species.name == name) {
             return current_evolution;
         } else if (current_evolution.evolves_to.length > 0) {
-            return getCurrentEvolutions(current_evolution.evolves_to[0]);
+            return current_evolution.evolves_to.reduce((acc, e) => {
+                return acc || getCurrentEvolutions(e);
+            }, null);
         } else {
             return null;
         }
     })(evolutionChainData.chain);
-    const next_evolutions = current_evolutions && current_evolution.evolves_to.map(e => e.species.name);
+    const next_evolutions = current_evolutions && current_evolutions.evolves_to.map(e => e.species.name);
 
     const encounter_rate = data.pal_park_encounters.reduce((acc, e) => acc < e.rate ? e.rate : acc, 1);
     const pokemon = {
