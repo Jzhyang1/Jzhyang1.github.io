@@ -18,9 +18,9 @@ async function getPokemonByName(name) {
     // get the evolution chain
     const evolutionChain = await fetch(data.evolution_chain.url);
     const evolutionChainData = await evolutionChain.json();
-    const current_evolutions = (function getCurrentEvolutions(current_evolution) {
-        if (current_evolution.species.name == name) {
-            return current_evolution;
+    const next_evolutions = (function getCurrentEvolutions(current_evolution) {
+        if (current_evolution.species.name == data.name) {
+            return current_evolution.evolves_to.length > 0 ? current_evolution.evolves_to.map(e => e.species.name) : null;
         } else if (current_evolution.evolves_to.length > 0) {
             return current_evolution.evolves_to.reduce((acc, e) => {
                 return acc || getCurrentEvolutions(e);
@@ -29,14 +29,16 @@ async function getPokemonByName(name) {
             return null;
         }
     })(evolutionChainData.chain);
-    const next_evolutions = current_evolutions && current_evolutions.evolves_to.map(e => e.species.name);
+
+    const description = data.flavor_text_entries.find(entry => entry.language.name === 'en')?.flavor_text.replace(/\n/g, ' ');
 
     const encounter_rate = data.pal_park_encounters.reduce((acc, e) => acc < e.rate ? e.rate : acc, 1);
     const pokemon = {
         name: data.name,
         id: data.id,
         rarity: data.is_legendary ? 'legendary' : data.is_mythical ? 'mythical' : encounter_rate <= 10 ? 'rare' : encounter_rate <= 20 ? 'uncommon' : 'common',
-        evolution: next_evolutions
+        evolution: next_evolutions,
+        description: description
     };
 
     PokemonConfig.pokemonPool.set(name, pokemon);
@@ -44,7 +46,7 @@ async function getPokemonByName(name) {
     return pokemon;
 }
 
-async function getPokemonById(id) {
+function getPokemonById(id) {
     if (PokemonConfig.idPool.has(id)) {
         return PokemonConfig.idPool.get(id);
     }
@@ -55,6 +57,5 @@ async function getPokemonById(id) {
     }
 
     // since the pokemon API supports id and name queries, we can reuse the above function
-    const pokemon = await getPokemonByName(id);
-    return pokemon;
+    return getPokemonByName(id);
 }
