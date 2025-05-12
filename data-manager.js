@@ -85,7 +85,6 @@ class PokemonDataManager {
     }
 
     catchPokemon(pokemon) {
-        console.log('catchPokemon', pokemon);
         this.stats.caughtPokemon.push(pokemon);
         this.stats.totalCaught++;
         if (pokemon.shiny) this.stats.shinyCaught++;
@@ -233,7 +232,7 @@ class PokemonDataManager {
             localStorage.setItem('user', user);
         }
         const domain = window.location.hostname;
-        const time = new Date().getTime();
+        const time = new Date().getTime();  // refreshes every millisecond
         const full_string = `${domain}-${user}-${time}`;
         const full_hash = new Uint32Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(full_string)));
 
@@ -249,7 +248,7 @@ class PokemonDataManager {
         // within the rarity, we just accept the pokemon_id_hash as the pokemon index
         // but we will return undefined if the pokemon_id_hash is greater than the number of pokemon in the rarity
         const pokemon = await getPokemonById(pokemon_id_hash);
-
+        
         window.parent.postMessage({
             type: 'CREATE_POKEMON',
             success: true,
@@ -260,3 +259,4 @@ class PokemonDataManager {
 
 // Initialize the data manager
 const dataManager = new PokemonDataManager(); 
+window.dataManager = dataManager;
