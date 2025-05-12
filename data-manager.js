@@ -22,28 +22,75 @@ class PokemonDataManager {
             shinyMultiplier: 2
         };
 
-        // Load saved data
-        this.loadData();
+        // Initialize IndexedDB
+        this.initDB().then(() => {
+            // Load saved data
+            this.loadData();
+        });
 
         // Set up message listener
         window.addEventListener('message', this.handleMessage.bind(this));
     }
 
-    loadData() {
-        const savedData = localStorage.getItem('pokemonData');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            this.stats = data.stats;
-            this.pokemonValues = data.pokemonValues;
+    async initDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('PokemonGame', 1);
+
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                this.db = request.result;
+                resolve();
+            };
+
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains('gameData')) {
+                    db.createObjectStore('gameData');
+                }
+            };
+        });
+    }
+
+    async loadData() {
+        try {
+            const transaction = this.db.transaction(['gameData'], 'readonly');
+            const store = transaction.objectStore('gameData');
+            
+            const statsRequest = store.get('stats');
+            const valuesRequest = store.get('pokemonValues');
+
+            const [stats, values] = await Promise.all([
+                new Promise((resolve) => statsRequest.onsuccess = () => resolve(statsRequest.result)),
+                new Promise((resolve) => valuesRequest.onsuccess = () => resolve(valuesRequest.result))
+            ]);
+
+            if (stats) this.stats = stats;
+            if (values) this.pokemonValues = values;
+        } catch (error) {
+            console.error('Error loading data:', error);
         }
     }
 
-    saveData() {
-        const data = {
-            stats: this.stats,
-            pokemonValues: this.pokemonValues
-        };
-        localStorage.setItem('pokemonData', JSON.stringify(data));
+    async saveData() {
+        try {
+            const transaction = this.db.transaction(['gameData'], 'readwrite');
+            const store = transaction.objectStore('gameData');
+            
+            await Promise.all([
+                new Promise((resolve, reject) => {
+                    const request = store.put(this.stats, 'stats');
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                }),
+                new Promise((resolve, reject) => {
+                    const request = store.put(this.pokemonValues, 'pokemonValues');
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                })
+            ]);
+        } catch (error) {
+            console.error('Error saving data:', error);
+        }
     }
 
     handleMessage(event) {
@@ -84,7 +131,7 @@ class PokemonDataManager {
         }, targetOrigin);
     }
 
-    catchPokemon(pokemon) {
+    async catchPokemon(pokemon) {
         this.stats.caughtPokemon.push(pokemon);
         this.stats.totalCaught++;
         if (pokemon.shiny) this.stats.shinyCaught++;
@@ -99,7 +146,7 @@ class PokemonDataManager {
         const candyReward = Math.floor(value * 0.05); // 5% of value as candy
         this.stats.candy += candyReward;
         
-        this.saveData();
+        await this.saveData();
 
         // Send response back to main window
         window.parent.postMessage({
@@ -133,7 +180,7 @@ class PokemonDataManager {
         );
         
         this.stats.caughtPokemon[index] = evolvedPokemon;
-        this.saveData();
+        await this.saveData();
 
         // Send response back to main window
         window.parent.postMessage({
@@ -146,7 +193,7 @@ class PokemonDataManager {
         return true;
     }
 
-    sellPokemon(pokemon) {
+    async sellPokemon(pokemon) {
         const baseValue = this.pokemonValues[pokemon.rarity];
         const value = pokemon.shiny ? baseValue * this.pokemonValues.shinyMultiplier : baseValue;
         this.stats.currency += Math.floor(value);
@@ -167,7 +214,7 @@ class PokemonDataManager {
             }
         }
         
-        this.saveData();
+        await this.saveData();
 
         // Send response back to main window
         window.parent.postMessage({
@@ -179,7 +226,7 @@ class PokemonDataManager {
         this.sendData(window.parent, '*');
     }
 
-    purchaseCandy(amount) {
+    async purchaseCandy(amount) {
         const cost = amount * 10; // 10 currency per candy
         if (this.stats.currency < cost) {
             window.parent.postMessage({
@@ -191,7 +238,7 @@ class PokemonDataManager {
         
         this.stats.currency -= cost;
         this.stats.candy += amount;
-        this.saveData();
+        await this.saveData();
 
         // Send response back to main window
         window.parent.postMessage({
