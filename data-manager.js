@@ -288,13 +288,13 @@ class PokemonDataManager {
         let pokemon = await getPokemonById(pokemon_id_hash);
 
         // rarity filtering rules: legendary pokemon only exist if time ^ id is divisible by 8
-        if (pokemon.rarity === 'legendary' && (Date.now() ^ pokemon_id_hash) % 8 !== 0) pokemon = null;
+        if (pokemon?.rarity === 'legendary' && (Date.now() ^ pokemon_id_hash) % 8 !== 0) pokemon = null;
         // same with mythical
-        if (pokemon.rarity === 'mythical' && (Date.now() ^ pokemon_id_hash) % 8 !== 0) pokemon = null;
+        if (pokemon?.rarity === 'mythical' && (Date.now() ^ pokemon_id_hash) % 8 !== 0) pokemon = null;
         // rares exist if time ^ id is divisible by 4
-        if (pokemon.rarity === 'rare' && (Date.now() ^ pokemon_id_hash) % 4 !== 0) pokemon = null;
+        if (pokemon?.rarity === 'rare' && (Date.now() ^ pokemon_id_hash) % 4 !== 0) pokemon = null;
         // uncommons exist if time ^ id is divisible by 2
-        if (pokemon.rarity === 'uncommon' && (Date.now() ^ pokemon_id_hash) % 2 !== 0) pokemon = null;
+        if (pokemon?.rarity === 'uncommon' && (Date.now() ^ pokemon_id_hash) % 2 !== 0) pokemon = null;
         
         window.parent.postMessage({
             type: 'CREATE_POKEMON',
