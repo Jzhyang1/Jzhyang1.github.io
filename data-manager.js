@@ -22,11 +22,39 @@ class PokemonDataManager {
             shinyMultiplier: 2
         };
 
-        // Load saved data
-        this.loadData();
+        this.initialized = false;
 
         // Set up message listener
         window.addEventListener('message', this.handleMessage.bind(this));
+
+        // Handle initialization on bag click
+        document.hasStorageAccess().then((hasAccess) => {
+            if (hasAccess) {
+                window.parent.postMessage({
+                    type: 'GAME_INITIALIZE',
+                    first: false
+                }, '*');
+                this.initialized = true;
+                this.loadData();
+                document.getElementById('initial-bag').classList.add('hidden');
+            } else {
+                document.getElementById('initial-bag').addEventListener('click', async () => {
+                    await document.requestStorageAccess();
+                    if (await document.hasStorageAccess()) {
+                        window.parent.postMessage({
+                            type: 'GAME_INITIALIZE',
+                            first: true
+                        }, '*');
+                        this.initialized = true;
+                        this.loadData();
+                        document.getElementById('initial-bag').classList.add('hidden');
+                        return;
+                    } else {
+                        console.error('Failed to get storage access');
+                    }
+                });
+            }
+        });
     }
 
     loadData() {
@@ -224,6 +252,16 @@ class PokemonDataManager {
     }
 
     async createPokemon() {
+        if (!this.initialized) {
+            window.parent.postMessage({
+                type: 'CREATE_POKEMON',
+                success: false,
+                message: 'Storage access not initialized',
+                pokemon: null
+            }, '*');
+            return;
+        }
+
         // The pokemon generated is given by the JWT hash of the domain, the user, and the current time
         let user = localStorage.getItem('user');
         if (!user) {
@@ -247,7 +285,16 @@ class PokemonDataManager {
         
         // within the rarity, we just accept the pokemon_id_hash as the pokemon index
         // but we will return undefined if the pokemon_id_hash is greater than the number of pokemon in the rarity
-        const pokemon = await getPokemonById(pokemon_id_hash);
+        let pokemon = await getPokemonById(pokemon_id_hash);
+
+        // rarity filtering rules: legendary pokemon only exist if time ^ id is divisible by 8
+        if (pokemon.rarity === 'legendary' && (Date.now() ^ pokemon_id_hash) % 8 !== 0) pokemon = null;
+        // same with mythical
+        if (pokemon.rarity === 'mythical' && (Date.now() ^ pokemon_id_hash) % 8 !== 0) pokemon = null;
+        // rares exist if time ^ id is divisible by 4
+        if (pokemon.rarity === 'rare' && (Date.now() ^ pokemon_id_hash) % 4 !== 0) pokemon = null;
+        // uncommons exist if time ^ id is divisible by 2
+        if (pokemon.rarity === 'uncommon' && (Date.now() ^ pokemon_id_hash) % 2 !== 0) pokemon = null;
         
         window.parent.postMessage({
             type: 'CREATE_POKEMON',
