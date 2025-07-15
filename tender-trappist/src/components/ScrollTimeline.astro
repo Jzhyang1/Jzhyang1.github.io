@@ -26,6 +26,12 @@ const {items} = Astro.props;
         <div class="summary">{item.summary}</div>
       </div>
       <div class="timeline-item-title">
+        {item.details && <details class="timeline-item-details">
+          <summary>Details</summary>
+          {item.details.split('\n').map((line: string) => (
+            <p>{line.split("~~").map((val, i)=>i%2===0?val:<a href={val} target="_blank">{val}</a>)}</p>
+          ))}
+        </details>}
         {item.image && <img src={item.image} alt={item.organization} />}
       </div>
     </div>
@@ -107,6 +113,11 @@ const {items} = Astro.props;
         display: flex;
         flex: 1;
         flex-direction: column;
+    }
+
+    details {
+      width: 100%;
+      font-size: smaller;
     }
   
     .timeline-item img {

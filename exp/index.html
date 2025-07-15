@@ -1,48 +1,123 @@
-<!DOCTYPE html><html lang="en" data-astro-cid-sckkx6r4> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.3.1"><title>Jonathan Yang</title><script src="/pokemon-walker.min.js"></script><style>#background[data-astro-cid-6fkawz7n]{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;filter:blur(15px)}.container[data-astro-cid-6fkawz7n]{margin-left:auto;margin-right:auto;padding-top:40px;padding-bottom:80px;width:80%}
-html,body{margin:0;width:100%;height:100%}.layout-menubar[data-astro-cid-sckkx6r4]{display:flex;position:fixed;top:0;left:-100%;width:100%;background-color:#333;color:#fff;z-index:1000;transition:left .3s ease-in-out}.layout-menubar[data-astro-cid-sckkx6r4].show{padding-left:50px;justify-content:start;left:0}.layout-menubar[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]{color:#fff;text-decoration:none;padding:15px;display:block}.layout-menubar[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]:hover{background-color:#575757}.menu-icon[data-astro-cid-sckkx6r4]{position:fixed;top:10px;left:10px;cursor:pointer;z-index:1001}.menu-icon[data-astro-cid-sckkx6r4] div[data-astro-cid-sckkx6r4]{width:25px;height:3px;background-color:#333;margin:5px 0}.menu-icon[data-astro-cid-sckkx6r4].show div[data-astro-cid-sckkx6r4]{background-color:#fff}.dropdown[data-astro-cid-sckkx6r4]{display:flex;position:relative;height:fit-content}.dropdown-list[data-astro-cid-sckkx6r4]{display:none;position:absolute;top:50px;background-color:#333;width:300px;box-shadow:0 8px 16px #0003;z-index:1000;flex-direction:column}.dropdown-list[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]{color:#fff;padding:12px 16px;text-decoration:none;display:block}.dropdown-list[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]:hover{background-color:#575757}.dropdown[data-astro-cid-sckkx6r4].show .dropdown-list[data-astro-cid-sckkx6r4]{display:flex}.pill[data-astro-cid-sckkx6r4]{color:#fff;padding:5px 10px;border-radius:10px;font-size:.8em}.pill[data-astro-cid-sckkx6r4].primary{background-color:#678bdd}.pill[data-astro-cid-sckkx6r4].secondary{background-color:#677b8a}@media screen and (max-width: 768px){.layout-menubar[data-astro-cid-sckkx6r4]{justify-content:space-around;flex-direction:column}.layout-menubar[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]{display:inline}}
+<!DOCTYPE html><html lang="en" data-astro-cid-sckkx6r4> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.3.1"><title>Jonathan Yang</title><style>html,body{margin:0;width:100%;height:100%}.layout-menubar[data-astro-cid-sckkx6r4]{display:flex;position:fixed;top:0;left:-100%;width:100%;background-color:#333;color:#fff;z-index:1000;transition:left .3s ease-in-out}.layout-menubar[data-astro-cid-sckkx6r4].show{padding-left:50px;justify-content:start;left:0}.layout-menubar[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]{color:#fff;text-decoration:none;padding:15px;display:block}.layout-menubar[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]:hover{background-color:#575757}.menu-icon[data-astro-cid-sckkx6r4]{position:fixed;top:10px;left:10px;cursor:pointer;z-index:1001}.menu-icon[data-astro-cid-sckkx6r4] div[data-astro-cid-sckkx6r4]{width:25px;height:3px;background-color:#333;margin:5px 0}.menu-icon[data-astro-cid-sckkx6r4].show div[data-astro-cid-sckkx6r4]{background-color:#fff}.dropdown[data-astro-cid-sckkx6r4]{display:flex;position:relative;height:fit-content}.dropdown-list[data-astro-cid-sckkx6r4]{display:none;position:absolute;top:50px;background-color:#333;width:300px;box-shadow:0 8px 16px #0003;z-index:1000;flex-direction:column}.dropdown-list[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]{color:#fff;padding:12px 16px;text-decoration:none;display:block}.dropdown-list[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]:hover{background-color:#575757}.dropdown[data-astro-cid-sckkx6r4].show .dropdown-list[data-astro-cid-sckkx6r4]{display:flex}.pill[data-astro-cid-sckkx6r4]{color:#fff;padding:5px 10px;border-radius:10px;font-size:.8em}.pill[data-astro-cid-sckkx6r4].primary{background-color:#678bdd}.pill[data-astro-cid-sckkx6r4].secondary{background-color:#677b8a}@media screen and (max-width: 768px){.layout-menubar[data-astro-cid-sckkx6r4]{justify-content:space-around;flex-direction:column}.layout-menubar[data-astro-cid-sckkx6r4] a[data-astro-cid-sckkx6r4]{display:inline}}
+.timeline[data-astro-cid-h24fmokw]{display:flex;flex-direction:column;align-items:center;padding:20px}.timeline-item[data-astro-cid-h24fmokw]{display:flex;flex-direction:column;margin-bottom:20px;width:100%;max-width:600px;background:#f9f9f9;padding:15px;border-radius:8px;box-shadow:0 4px 8px #0000001a}.timeline-item-content[data-astro-cid-h24fmokw] .group[data-astro-cid-h24fmokw]{display:flex;flex:1;flex-direction:row;justify-content:space-between;align-items:center;align-content:center;gap:5px}.timeline-item-content[data-astro-cid-h24fmokw]{display:flex;flex-direction:column}.timeline-item-content[data-astro-cid-h24fmokw] a[data-astro-cid-h24fmokw]:hover{text-decoration:underline}.timeline-item-content[data-astro-cid-h24fmokw] h6[data-astro-cid-h24fmokw]{max-width:70%;font-size:1.1em;margin:5px 0}.timeline-item-content[data-astro-cid-h24fmokw] .department[data-astro-cid-h24fmokw]{align-self:center;font-size:.9em}.timeline-item-content[data-astro-cid-h24fmokw] .date[data-astro-cid-h24fmokw],.timeline-item-content[data-astro-cid-h24fmokw] .location[data-astro-cid-h24fmokw]{align-self:center;font-size:.9em;color:#666}.timeline-item-content[data-astro-cid-h24fmokw] .summary[data-astro-cid-h24fmokw]{margin-top:10px;font-size:.8em}.timeline-item-content[data-astro-cid-h24fmokw] a[data-astro-cid-h24fmokw]{color:#678baa;text-decoration:none}.timeline-item-title[data-astro-cid-h24fmokw]{align-items:center;margin-top:5px;padding-top:5px;border-top:1px solid black;display:flex;flex:1;flex-direction:column}details[data-astro-cid-h24fmokw]{width:100%;font-size:smaller}.timeline-item[data-astro-cid-h24fmokw] img[data-astro-cid-h24fmokw]{max-height:70px;margin-left:auto;margin-right:auto;border-radius:20%}.categories[data-astro-cid-h24fmokw]{display:flex;flex-wrap:wrap;flex-direction:row-reverse;gap:5px;font-size:.8em}.category[data-astro-cid-h24fmokw]{background-color:#678baa;color:#fff;padding:5px 10px;border-radius:10px;font-size:.8em}@media screen and (max-width: 768px){.timeline-item-content[data-astro-cid-h24fmokw] h6[data-astro-cid-h24fmokw]{font-size:.4em}.timeline-item-content[data-astro-cid-h24fmokw] .date[data-astro-cid-h24fmokw],.timeline-item-content[data-astro-cid-h24fmokw] .location[data-astro-cid-h24fmokw]{align-self:center;font-size:.4em;color:#666}.timeline-item-content[data-astro-cid-h24fmokw] .department[data-astro-cid-h24fmokw]{font-size:.4em}.timeline-item-content[data-astro-cid-h24fmokw] .summary[data-astro-cid-h24fmokw]{font-size:.3em}.timeline-item[data-astro-cid-h24fmokw] img[data-astro-cid-h24fmokw]{max-height:40px}}
+#background[data-astro-cid-6fkawz7n]{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;filter:blur(15px)}.container[data-astro-cid-6fkawz7n]{margin-left:auto;margin-right:auto;padding-top:40px;padding-bottom:80px;width:80%}
 </style></head> <body data-astro-cid-sckkx6r4> <div class="menu-icon" id="layout-menutoggle" data-astro-cid-sckkx6r4> <div data-astro-cid-sckkx6r4></div> <div data-astro-cid-sckkx6r4></div> <div data-astro-cid-sckkx6r4></div> </div> <nav class="layout-menubar" id="layout-menubar" data-astro-cid-sckkx6r4> <a href="/" data-astro-cid-sckkx6r4>Home</a> <a href="/bio" data-astro-cid-sckkx6r4>Biography</a> <a href="/exp" data-astro-cid-sckkx6r4>Experience</a> <a href="/gallery" data-astro-cid-sckkx6r4>Gallery</a> <div class="dropdown" data-astro-cid-sckkx6r4> <a id="projects-toggle" class="dropdown-toggle" data-astro-cid-sckkx6r4>
 Projects
-</a> <div id="projects-list" class="dropdown-list" data-astro-cid-sckkx6r4> <a class="dropdown-item" href="https://monomer.dev/" data-astro-cid-sckkx6r4> Monomer </a> <a href="/projects" data-astro-cid-sckkx6r4>SEE ALL</a> </div> </div> <a href="/Resume.pdf" target="_blank" data-astro-cid-sckkx6r4>Resume</a> </nav>  <div data-bs-spy="scroll" data-bs-target="#navbar-awards" class="container" data-astro-cid-6fkawz7n> <img id="background" src="/_astro/background.kWxuFZgg.svg" alt="" fetchpriority="high" data-astro-cid-6fkawz7n> <h2 id="title" data-astro-cid-6fkawz7n>Experience</h2> <div style="margin-bottom: 1rem" data-astro-cid-6fkawz7n> <strong data-astro-cid-6fkawz7n>CTO</strong> | Panacea (<a href="https://panacea-tech.com/" data-astro-cid-6fkawz7n>Panacea-tech.com</a>) <br data-astro-cid-6fkawz7n> <span style="color: gray; font-size: small" data-astro-cid-6fkawz7n>Austin, TX | Nov 2024 -- present</span> <ul data-astro-cid-6fkawz7n> <li data-astro-cid-6fkawz7n>
-Developing a platform with React Native that connects outpatients with personalized resources.
-</li> <li data-astro-cid-6fkawz7n>
-Led technical development team of 4 through iterative improvements to code hygiene and detailed specifications.
-</li> <li data-astro-cid-6fkawz7n>
-Set up the (Flask) REST API, MongoDB database, and AI-driven recommendation system on AWS.
-</li> <li data-astro-cid-6fkawz7n>
-Published the app initially for 20 local users; scaling app with web-scraping pipeline for potential resources.
-</li> </ul> </div> <div style="margin-bottom: 1rem" data-astro-cid-6fkawz7n> <strong data-astro-cid-6fkawz7n>Computer Science Tutor</strong> | Cinco Learning <br data-astro-cid-6fkawz7n> <span style="color: gray; font-size: small" data-astro-cid-6fkawz7n>Katy, TX | Nov 2023 -- present</span> <ul data-astro-cid-6fkawz7n> <li data-astro-cid-6fkawz7n>
-Preparing students for the USACO bronze level by teaching
+</a> <div id="projects-list" class="dropdown-list" data-astro-cid-sckkx6r4> <a class="dropdown-item" href="/projects" data-astro-cid-sckkx6r4> Apovo Recommendation Engine </a><a class="dropdown-item" href="/projects" data-astro-cid-sckkx6r4> C++ Autograd Library </a><a class="dropdown-item" href="https://monomer.dev/" data-astro-cid-sckkx6r4> Monomer </a> <a href="/projects" data-astro-cid-sckkx6r4>SEE ALL</a> </div> </div> <a href="/Resume.pdf" target="_blank" data-astro-cid-sckkx6r4>Resume</a> </nav>  <div data-bs-spy="scroll" data-bs-target="#navbar-awards" class="container" data-astro-cid-6fkawz7n> <div class="timeline" data-astro-cid-h24fmokw> <div class="timeline-item" data-astro-cid-h24fmokw> <div class="timeline-item-content" data-astro-cid-h24fmokw> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw>Chief Technology Officer </h6> <div class="date" data-astro-cid-h24fmokw>Nov 2024 - Present</div> </div> <div class="group" data-astro-cid-h24fmokw> <div class="department" data-astro-cid-h24fmokw>Technology and Development</div> <div class="location" data-astro-cid-h24fmokw>Austin, TX, USA</div> </div> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw><a href="https://panacea-tech.com/" target="_blank" data-astro-cid-h24fmokw>Apovo Health (rebranded from Panacea)</a></h6> <div class="categories" data-astro-cid-h24fmokw> <span class="category" data-astro-cid-h24fmokw>Work Experience</span><span class="category" data-astro-cid-h24fmokw>Startup</span> </div> </div> <div class="summary" data-astro-cid-h24fmokw>Leading full stack development of AI-medtech startup for improved outpatient care.</div> </div> <div class="timeline-item-title" data-astro-cid-h24fmokw> <details class="timeline-item-details" data-astro-cid-h24fmokw> <summary data-astro-cid-h24fmokw>Details</summary> <p data-astro-cid-h24fmokw>Built React Native frontend and Flask backend on AWS with a personalized recommendation system (see <a href="/projects" target="_blank" data-astro-cid-h24fmokw>/projects</a>). Oversaw development team of 4 and conducting initial pilot testing. </p><p data-astro-cid-h24fmokw>Implemented developer rotation system to ensure team members gain experience in all aspects of the project. </p><p data-astro-cid-h24fmokw></p><p data-astro-cid-h24fmokw>The project is a personalized health management platform that uses AI to recommend lifestyle changes and track health metrics for patients with chronic conditions.</p> </details> <img src="/panacea.png" alt="Apovo Health (rebranded from Panacea)" data-astro-cid-h24fmokw> </div> </div><div class="timeline-item" data-astro-cid-h24fmokw> <div class="timeline-item-content" data-astro-cid-h24fmokw> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw>Computer Science Tutor </h6> <div class="date" data-astro-cid-h24fmokw>Nov 2023 - Present</div> </div> <div class="group" data-astro-cid-h24fmokw> <div class="department" data-astro-cid-h24fmokw>Independent Contractor</div> <div class="location" data-astro-cid-h24fmokw>Katy, TX, USA</div> </div> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw>Cinco Learning</h6> <div class="categories" data-astro-cid-h24fmokw> <span class="category" data-astro-cid-h24fmokw>Work Experience</span> </div> </div> <div class="summary" data-astro-cid-h24fmokw>Tutored students in high school computer science, data structures, and USACO bronze competition logic with C++ and Java Swing.</div> </div> <div class="timeline-item-title" data-astro-cid-h24fmokw>   </div> </div><div class="timeline-item" data-astro-cid-h24fmokw> <div class="timeline-item-content" data-astro-cid-h24fmokw> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw>Mobile App Developer </h6> <div class="date" data-astro-cid-h24fmokw>Nov 2023 - May 2024</div> </div> <div class="group" data-astro-cid-h24fmokw> <div class="department" data-astro-cid-h24fmokw>Development</div> <div class="location" data-astro-cid-h24fmokw>Austin, TX, USA</div> </div> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw><a href="https://fleetsmart.biz/" target="_blank" data-astro-cid-h24fmokw>FleetSmart Apps</a></h6> <div class="categories" data-astro-cid-h24fmokw> <span class="category" data-astro-cid-h24fmokw>Work Experience</span><span class="category" data-astro-cid-h24fmokw>Internship</span> </div> </div> <div class="summary" data-astro-cid-h24fmokw>Built the organization’s first cross-platform mobile app integrating web and native features for a self-growth platform.</div> </div> <div class="timeline-item-title" data-astro-cid-h24fmokw>   </div> </div><div class="timeline-item" data-astro-cid-h24fmokw> <div class="timeline-item-content" data-astro-cid-h24fmokw> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw>Mobile App Developer </h6> <div class="date" data-astro-cid-h24fmokw>Mar 2023 - Nov 2023</div> </div> <div class="group" data-astro-cid-h24fmokw> <div class="department" data-astro-cid-h24fmokw>Technology</div> <div class="location" data-astro-cid-h24fmokw>Austin, TX, USA</div> </div> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw><a href="https://www.purposepro.org/" target="_blank" data-astro-cid-h24fmokw>Catalyst Collective</a></h6> <div class="categories" data-astro-cid-h24fmokw> <span class="category" data-astro-cid-h24fmokw>Work Experience</span> </div> </div> <div class="summary" data-astro-cid-h24fmokw>Published and maintained the mobile version of the Purpose Project platform; integrated with legacy codebase as sole developer.</div> </div> <div class="timeline-item-title" data-astro-cid-h24fmokw>   </div> </div><div class="timeline-item" data-astro-cid-h24fmokw> <div class="timeline-item-content" data-astro-cid-h24fmokw> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw>Full Stack Developer </h6> <div class="date" data-astro-cid-h24fmokw>Mar 2023 - Feb 2024</div> </div> <div class="group" data-astro-cid-h24fmokw> <div class="department" data-astro-cid-h24fmokw>Technology Team</div> <div class="location" data-astro-cid-h24fmokw>Vancouver, Canada</div> </div> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw><a href="https://edubeyond.ai/" target="_blank" data-astro-cid-h24fmokw>EduBeyond</a></h6> <div class="categories" data-astro-cid-h24fmokw> <span class="category" data-astro-cid-h24fmokw>Work Experience</span><span class="category" data-astro-cid-h24fmokw>Internship</span><span class="category" data-astro-cid-h24fmokw>Startup</span> </div> </div> <div class="summary" data-astro-cid-h24fmokw>Implemented full stack LMS features including announcements, messaging, document handling, and generative AI. Scaled platform to 30,000 users.</div> </div> <div class="timeline-item-title" data-astro-cid-h24fmokw>  <img src="https://edubeyond.ai/logos/logo_transparent_inline.png" alt="EduBeyond" data-astro-cid-h24fmokw> </div> </div><div class="timeline-item" data-astro-cid-h24fmokw> <div class="timeline-item-content" data-astro-cid-h24fmokw> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw>Research Assistant </h6> <div class="date" data-astro-cid-h24fmokw>Dec 2022 - Dec 2023</div> </div> <div class="group" data-astro-cid-h24fmokw> <div class="department" data-astro-cid-h24fmokw>Renewable Power Grid Lab</div> <div class="location" data-astro-cid-h24fmokw>Houston, TX, USA</div> </div> <div class="group" data-astro-cid-h24fmokw> <h6 data-astro-cid-h24fmokw><a href="https://rpglab.github.io/people/Jonathan-Yang/" target="_blank" data-astro-cid-h24fmokw>The University of Houston</a></h6> <div class="categories" data-astro-cid-h24fmokw> <span class="category" data-astro-cid-h24fmokw>Work Experience</span><span class="category" data-astro-cid-h24fmokw>Research</span> </div> </div> <div class="summary" data-astro-cid-h24fmokw>Researched ML techniques for ERCOT load forecasting using DNNs, SVMs, LSTMs, and CNNs. Published results in IEEE TPEC 2024.</div> </div> <div class="timeline-item-title" data-astro-cid-h24fmokw>  <img src="https://rpglab.github.io/images/Logo_RPGLab.png" alt="The University of Houston" data-astro-cid-h24fmokw> </div> </div> </div>  <img id="background" src="/_astro/background.kWxuFZgg.svg" alt="" fetchpriority="high" data-astro-cid-6fkawz7n> <!-- <h2 id="title">Experience</h2>
+    <div style="margin-bottom: 1rem">
+        <strong>CTO</strong> | Panacea (<a href="https://panacea-tech.com/">Panacea-tech.com</a>) <br />
+        <span style="color: gray; font-size: small"
+            >Austin, TX | Nov 2024 -- present</span
+        >
+        <ul>
+            <li>
+                Developing a platform with React Native that connects outpatients with personalized resources.
+            </li>
+            <li>
+                Led technical development team of 4 through iterative improvements to code hygiene and detailed specifications.
+            </li>
+            <li>
+                Set up the (Flask) REST API, MongoDB database, and AI-driven recommendation system on AWS.
+            </li>
+            <li>
+                Published the app initially for 20 local users; scaling app with web-scraping pipeline for potential resources.
+            </li>
+        </ul>
+    </div>
+    <div style="margin-bottom: 1rem">
+        <strong>Computer Science Tutor</strong> | Cinco Learning <br />
+        <span style="color: gray; font-size: small"
+            >Katy, TX | Nov 2023 -- present</span
+        >
+        <ul>
+            <li>
+                Preparing students for the USACO bronze level by teaching
                 competition programming logic and C++.
-</li> <li data-astro-cid-6fkawz7n>
-Tutoring students in high school data structures and algorithms
+            </li>
+            <li>
+                Tutoring students in high school data structures and algorithms
                 classes, including Java Swing Graphics.
-</li> </ul> </div> <div style="margin-bottom: 1rem" data-astro-cid-6fkawz7n> <strong data-astro-cid-6fkawz7n>Mobile App Developer</strong> | FleetSmart Apps (<a href="https://fleetsmart.biz/" data-astro-cid-6fkawz7n>fleetsmart.biz</a>) <br data-astro-cid-6fkawz7n> <span style="color: gray; font-size: small" data-astro-cid-6fkawz7n>Austin, TX | Nov 2023 -- May 2024</span> <ul data-astro-cid-6fkawz7n> <li data-astro-cid-6fkawz7n>
-Developed a mobile application for a self-growth platform merging web and native features.
-</li> <li data-astro-cid-6fkawz7n>Launched the organization's first mobile platform.</li> </ul> </div> <div style="margin-bottom: 1rem" data-astro-cid-6fkawz7n> <strong data-astro-cid-6fkawz7n>Mobile App Developer</strong> | Catalyst Collective (<a href="https://www.purposepro.org/" data-astro-cid-6fkawz7n>purposepro.org</a>) <br data-astro-cid-6fkawz7n> <span style="color: gray; font-size: small" data-astro-cid-6fkawz7n>Austin, TX | Mar 2023 -- Nov 2023</span> <ul data-astro-cid-6fkawz7n> <li data-astro-cid-6fkawz7n>
-Developed and published the mobile version of the Purpose
+            </li>
+        </ul>
+    </div>
+
+    <div style="margin-bottom: 1rem">
+        <strong>Mobile App Developer</strong> | FleetSmart Apps (<a
+            href="https://fleetsmart.biz/">fleetsmart.biz</a
+        >) <br />
+        <span style="color: gray; font-size: small"
+            >Austin, TX | Nov 2023 -- May 2024</span
+        >
+        <ul>
+            <li>
+                Developed a mobile application for a self-growth platform merging web and native features.
+            </li>
+            <li>Launched the organization's first mobile platform.</li>
+        </ul>
+    </div>
+
+    <div style="margin-bottom: 1rem">
+        <strong>Mobile App Developer</strong> | Catalyst Collective (<a
+            href="https://www.purposepro.org/">purposepro.org</a
+        >) <br />
+        <span style="color: gray; font-size: small"
+            >Austin, TX | Mar 2023 -- Nov 2023</span
+        >
+        <ul>
+            <li>
+                Developed and published the mobile version of the Purpose
                 Project platform on Google Play and the Apple Store.
-</li> <li data-astro-cid-6fkawz7n>
-Integrated and improved existing codebase of 5000+ lines as the
+            </li>
+            <li>
+                Integrated and improved existing codebase of 5000+ lines as the
                 sole developer.
-</li> </ul> </div> <div style="margin-bottom: 1rem" data-astro-cid-6fkawz7n> <strong data-astro-cid-6fkawz7n>Full Stack Developer</strong> | EduBeyond (<a href="https://edubeyond.org" data-astro-cid-6fkawz7n>edubeyond.org</a>) <br data-astro-cid-6fkawz7n> <span style="color: gray; font-size: small" data-astro-cid-6fkawz7n>Vancouver, Canada | Mar 2023 -- Feb 2024</span> <ul data-astro-cid-6fkawz7n> <li data-astro-cid-6fkawz7n>
-Developed an AI-integrated LMS for educational and corporate
+            </li>
+        </ul>
+    </div>
+
+    <div style="margin-bottom: 1rem">
+        <strong>Full Stack Developer</strong> | EduBeyond (<a
+            href="https://edubeyond.org">edubeyond.org</a
+        >) <br />
+        <span style="color: gray; font-size: small"
+            >Vancouver, Canada | Mar 2023 -- Feb 2024</span
+        >
+        <ul>
+            <li>
+                Developed an AI-integrated LMS for educational and corporate
                 training using React, Next.js, AWS, and NextAuth with a team of
                 8.
-</li> <li data-astro-cid-6fkawz7n>
-Implemented: natural-feeling announcements, messaging, document handling, generative AI integration, and
+            </li>
+            <li>
+                Implemented: natural-feeling announcements, messaging, document handling, generative AI integration, and
                 authentication; supported by backend logic and (nonrelational) database schemas.
-</li> <li data-astro-cid-6fkawz7n>
-Scaled the platform website (a prototype at the time of joining) to support the first 30 thousand paying customers.
-</li> </ul> </div> <div style="margin-bottom: 1rem" data-astro-cid-6fkawz7n> <strong data-astro-cid-6fkawz7n>Research Assistant</strong> | Renewable Power Grid Lab | University
-        of Houston <br data-astro-cid-6fkawz7n> <span style="color: gray; font-size: small" data-astro-cid-6fkawz7n>Houston, TX | Dec 2022 -- Dec 2023</span> <ul data-astro-cid-6fkawz7n> <li data-astro-cid-6fkawz7n>
-Applied statistical machine learning techniques to forecast
+            </li>
+            <li>
+                Scaled the platform website (a prototype at the time of joining) to support the first 30 thousand paying customers.
+            </li>
+        </ul>
+    </div>
+
+    <div style="margin-bottom: 1rem">
+        <strong>Research Assistant</strong> | Renewable Power Grid Lab | University
+        of Houston <br />
+        <span style="color: gray; font-size: small"
+            >Houston, TX | Dec 2022 -- Dec 2023</span
+        >
+        <ul>
+            <li>
+                Applied statistical machine learning techniques to forecast
                 electrical loads on the ERCOT power grid using Python and
                 TensorFlow.
-</li> <li data-astro-cid-6fkawz7n>
-Tuned and optimized deep neural network algorithms to the time-series dataset, including experimentation with
+            </li>
+            <li>
+                Tuned and optimized deep neural network algorithms to the time-series dataset, including experimentation with
                 SVM, FCNN, LSTM, CNN, ablation studies, and encodings and activation functions.
-</li> <li data-astro-cid-6fkawz7n>
-Publication: Jonathan Yang, Mingjian Tuo, Jin Lu, and Xingpeng Li, “Analysis of Weather and Time Features
+            </li>
+            <li>
+                Publication: Jonathan Yang, Mingjian Tuo, Jin Lu, and Xingpeng Li, “Analysis of Weather and Time Features
                 in Machine Learning-aided ERCOT Load Forecasting” 2024 IEEE Texas Power and Energy Conference (TPEC).
                 ieeexplore.ieee.org/document/10472183
-</li> </ul> </div> </div>    <script type="module">const s=document.getElementById("layout-menubar"),e=document.getElementById("layout-menutoggle");e?.addEventListener("click",()=>{console.log("toggling"),!(!s||!e)&&(console.log("still toggling"),s.classList.contains("show")?(e.classList.remove("show"),s.classList.remove("show")):(e.classList.add("show"),s.classList.add("show")))});let n=window.scrollY;window.addEventListener("scroll",()=>{!s||!e||(window.scrollY>50?(e.classList.add("show"),s.classList.add("show")):(window.scrollY<50||window.scrollY<n&&window.scrollY+5<window.outerHeight)&&(e.classList.remove("show"),s.classList.remove("show")),n=window.scrollY)});const t=document.getElementById("projects-toggle"),c=document.getElementById("projects-list");t?.addEventListener("click",o=>{o.preventDefault();const l=t.parentElement;l&&(l.classList.contains("show")?l.classList.remove("show"):l.classList.add("show"))});document.addEventListener("click",o=>{!t||!c||!t.contains(o.target)&&!c.contains(o.target)&&t.parentElement?.classList.remove("show")});</script></body></html>
+            </li>
+        </ul>
+    </div> --> </div>    <script type="module">const s=document.getElementById("layout-menubar"),e=document.getElementById("layout-menutoggle");e?.addEventListener("click",()=>{console.log("toggling"),!(!s||!e)&&(console.log("still toggling"),s.classList.contains("show")?(e.classList.remove("show"),s.classList.remove("show")):(e.classList.add("show"),s.classList.add("show")))});let n=window.scrollY;window.addEventListener("scroll",()=>{!s||!e||(window.scrollY>50?(e.classList.add("show"),s.classList.add("show")):(window.scrollY<50||window.scrollY<n&&window.scrollY+5<window.outerHeight)&&(e.classList.remove("show"),s.classList.remove("show")),n=window.scrollY)});const t=document.getElementById("projects-toggle"),c=document.getElementById("projects-list");t?.addEventListener("click",o=>{o.preventDefault();const l=t.parentElement;l&&(l.classList.contains("show")?l.classList.remove("show"):l.classList.add("show"))});document.addEventListener("click",o=>{!t||!c||!t.contains(o.target)&&!c.contains(o.target)&&t.parentElement?.classList.remove("show")});</script></body></html>

@@ -49,15 +49,22 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    word-break: break-all;
+  }
+
+  .shell-form {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
   }
 
   input {
-    flex: 1;
     background: none;
     border: none;
     color: #fff;
     outline: none;
     font-family: monospace;
+    max-width: 275px;
   }
 </style>
 
@@ -109,6 +116,9 @@
     const params = args.slice(1);
 
     switch (cmd) {
+      case 'help':
+        appendOutput('Available commands: echo, ls, cat, open, cd, clear');
+        break;
       case 'echo':
         appendOutput(params.join(' '));
         break;
@@ -139,11 +149,31 @@
         }
         break;
       }
+      case 'open':{
+        const filePath = params[0];
+        const fileName = filePath.substring(filePath.lastIndexOf('/') + 1)
+        const findPath = calculatePath(filePath.substring(0, filePath.lastIndexOf('/')));
+
+        const dir = findPath ? directoryAt(findPath) : {};
+        const file = Array.isArray(dir) ? dir.find((e)=>e.organization === fileName) : dir[fileName];
+        if (file) {
+          try {
+            window.open((file as any).href, '_blank');
+            appendOutput(`open ${params[0]}: Link opened successfully`);
+          } catch (e) {
+            appendOutput(`open ${params[0]}: Failed to open link or no corresponding link`);
+          }
+        } else {
+          appendOutput(`open ${params[0]}: No such file or directory`);
+        }
+        break;
+      }
       case 'cd':
         const newPath = calculatePath(params[0])
         if (newPath) {
           currentPath = newPath;
           currentPathElement.textContent = `/${currentPath.join('/')} $ `;
+          topbarElement.textContent = `/${currentPath.join('/')}`;
         } else {
           appendOutput(`cd ${params[0]}: No such directory`);
         }

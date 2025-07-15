@@ -1,55 +1,76 @@
 [
-    {
-        "organization": "Panacea",
-        "href": "https://panacea-tech.com/",
-        "position": "Chief Technology Officer",
-        "department": "Technology and Development",
-        "categories": ["Work Experience", "Startup"],
-        "date": "Nov 2024 - Present",
-        "location": "Austin, TX, USA",
-        "image": "/panacea.png",
-        "summary": "Leading full stack development of AI-medtech startup for improved outpatient care."
-    },
-    {
-        "organization": "The University of Texas at Austin",
-        "href": "https://www.cs.utexas.edu/",
-        "position": "Turing Scholars Honors Student",
-        "department": "Department of Computer Science",
-        "categories": ["Education"],
-        "date": "Aug 2024 - Present",
-        "location": "2515 Speedway, Austin, TX 78712",
-        "image": "/utseal.png",
-        "summary": "Computer science honors student pursuing reasearch and career in compilers."
-    },
-    {
-        "organization": "Cinco Learning",
-        "position": "Computer Science Tutor",
-        "department": "Independent Contractor",
-        "categories": ["Work Experience"],
-        "date": "Nov 2023 - Dec 2024",
-        "location": "Katy, TX, USA",
-        "summary": "Tutored high school computer science and USACO."
-    },
-    {
-        "organization": "EduBeyond",
-        "href": "https://edubeyond.org/",
-        "position": "Full Stack Developer",
-        "department": "Technology Team",
-        "categories": ["Work Experience", "Internship", "Startup"],
-        "date": "Mar 2023 - Feb 2024",
-        "location": "Vancouver, Canada",
-        "image": "https://edubeyond.ai/logos/logo_transparent_inline.png",
-        "summary": "Implemented full stack aspects of messaging, authentication, and AI integration."
-    },
-    {
-        "organization": "The University of Houston",
-        "href": "https://rpglab.github.io/",
-        "position": "Research Assistant",
-        "department": "Renewable Power Grid Lab",
-        "categories": ["Work Experience", "Research"],
-        "date": "Dec 2022 - Dec 2023",
-        "location": "Houston, TX, USA",
-        "image": "https://rpglab.github.io/images/Logo_RPGLab.png",
-        "summary": "Conducted and modified experiments using neural networks to forecast power grid loads."
-    }
+  {
+    "organization": "Apovo Health (rebranded from Panacea)",
+    "href": "https://panacea-tech.com/",
+    "position": "Chief Technology Officer",
+    "department": "Technology and Development",
+    "categories": ["Work Experience", "Startup"],
+    "date": "Nov 2024 - Present",
+    "location": "Austin, TX, USA",
+    "image": "/panacea.png",
+    "summary": "Leading full stack development of AI-medtech startup for improved outpatient care.",
+    "details": "Built React Native frontend and Flask backend on AWS with a personalized recommendation system (see ~~/projects~~). Oversaw development team of 4 and conducting initial pilot testing. \nImplemented developer rotation system to ensure team members gain experience in all aspects of the project. \n\nThe project is a personalized health management platform that uses AI to recommend lifestyle changes and track health metrics for patients with chronic conditions."
+  },
+  {
+    "organization": "The University of Texas at Austin",
+    "href": "https://www.cs.utexas.edu/",
+    "position": "Turing Scholars Honors Student",
+    "department": "Department of Computer Science",
+    "categories": ["Education"],
+    "date": "Aug 2024 - Present",
+    "location": "2515 Speedway, Austin, TX 78712",
+    "image": "/utseal.png",
+    "summary": "Computer science honors student pursuing research and career in compilers."
+  },
+  {
+    "organization": "Cinco Learning",
+    "position": "Computer Science Tutor",
+    "department": "Independent Contractor",
+    "categories": ["Work Experience"],
+    "date": "Nov 2023 - Present",
+    "location": "Katy, TX, USA",
+    "summary": "Tutored students in high school computer science, data structures, and USACO bronze competition logic with C++ and Java Swing."
+  },
+  {
+    "organization": "FleetSmart Apps",
+    "href": "https://fleetsmart.biz/",
+    "position": "Mobile App Developer",
+    "department": "Development",
+    "categories": ["Work Experience", "Internship"],
+    "date": "Nov 2023 - May 2024",
+    "location": "Austin, TX, USA",
+    "summary": "Built the organization’s first cross-platform mobile app integrating web and native features for a self-growth platform."
+  },
+  {
+    "organization": "Catalyst Collective",
+    "href": "https://www.purposepro.org/",
+    "position": "Mobile App Developer",
+    "department": "Technology",
+    "categories": ["Work Experience"],
+    "date": "Mar 2023 - Nov 2023",
+    "location": "Austin, TX, USA",
+    "summary": "Published and maintained the mobile version of the Purpose Project platform; integrated with legacy codebase as sole developer."
+  },
+  {
+    "organization": "EduBeyond",
+    "href": "https://edubeyond.ai/",
+    "position": "Full Stack Developer",
+    "department": "Technology Team",
+    "categories": ["Work Experience", "Internship", "Startup"],
+    "date": "Mar 2023 - Feb 2024",
+    "location": "Vancouver, Canada",
+    "image": "https://edubeyond.ai/logos/logo_transparent_inline.png",
+    "summary": "Implemented full stack LMS features including announcements, messaging, document handling, and generative AI. Scaled platform to 30,000 users."
+  },
+  {
+    "organization": "The University of Houston",
+    "href": "https://rpglab.github.io/people/Jonathan-Yang/",
+    "position": "Research Assistant",
+    "department": "Renewable Power Grid Lab",
+    "categories": ["Work Experience", "Research"],
+    "date": "Dec 2022 - Dec 2023",
+    "location": "Houston, TX, USA",
+    "image": "https://rpglab.github.io/images/Logo_RPGLab.png",
+    "summary": "Researched ML techniques for ERCOT load forecasting using DNNs, SVMs, LSTMs, and CNNs. Published results in IEEE TPEC 2024."
+  }
 ]

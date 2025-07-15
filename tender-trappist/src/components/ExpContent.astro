@@ -1,5 +1,7 @@
 ---
 import background from '../assets/background.svg';
+import affiliations from '../data/affiliations.json';
+import ScrollTimeline from './ScrollTimeline.astro';
 ---
 
 <div
@@ -7,8 +9,9 @@ import background from '../assets/background.svg';
     data-bs-target="#navbar-awards"
     class="container"
 >
+    <ScrollTimeline items={affiliations.filter(item => item.categories.includes("Work Experience"))} />
     <img id="background" src={background.src} alt="" fetchpriority="high" />
-    <h2 id="title">Experience</h2>
+    <!-- <h2 id="title">Experience</h2>
     <div style="margin-bottom: 1rem">
         <strong>CTO</strong> | Panacea (<a href="https://panacea-tech.com/">Panacea-tech.com</a>) <br />
         <span style="color: gray; font-size: small"
@@ -125,7 +128,7 @@ import background from '../assets/background.svg';
                 ieeexplore.ieee.org/document/10472183
             </li>
         </ul>
-    </div>
+    </div> -->
 </div>
 
 <style>
