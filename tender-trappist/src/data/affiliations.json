@@ -1,13 +1,25 @@
 [
   {
+    "organization": "LDOS Expedition",
+    "href": "https://ldos.utexas.edu",
+    "position": "Student Researcher",
+    "department": "Mentored by Saurabh",
+    "categories": ["Research", "Education"],
+    "date": "Nov 2025 - Present",
+    "location": "Austin, TX, USA",
+    "image": "https://ldos.utexas.edu/sites/default/files/NSF_LDOS_Logo_Lockup_RGB_0.png",
+    "summary": "OS Page Cache Prefetching.",
+    "details": "Evaluating performance of the Linux kernel when the page cache prefetching policy is informed by the scheduler state."
+  },
+  {
     "organization": "Apovo Health (rebranded from Panacea)",
-    "href": "https://panacea-tech.com/",
+    "href": "https://apovohealth.com/",
     "position": "Chief Technology Officer",
     "department": "Technology and Development",
     "categories": ["Work Experience", "Startup"],
     "date": "Nov 2024 - Present",
     "location": "Austin, TX, USA",
-    "image": "/panacea.png",
+    "image": "https://apovohealth.com/apovo%20logo%20512x512.png",
     "summary": "Leading full stack development of AI-medtech startup for improved outpatient care.",
     "details": "Built React Native frontend and Flask backend on AWS with a personalized recommendation system (see ~~/projects~~). Oversaw development team of 4 and conducting initial pilot testing. \nImplemented developer rotation system to ensure team members gain experience in all aspects of the project. \n\nThe project is a personalized health management platform that uses AI to recommend lifestyle changes and track health metrics for patients with chronic conditions."
   },
@@ -27,19 +39,9 @@
     "position": "Computer Science Tutor",
     "department": "Independent Contractor",
     "categories": ["Work Experience"],
-    "date": "Nov 2023 - Present",
+    "date": "Nov 2023 - Sept 2024",
     "location": "Katy, TX, USA",
     "summary": "Tutored students in high school computer science, data structures, and USACO bronze competition logic with C++ and Java Swing."
-  },
-  {
-    "organization": "FleetSmart Apps",
-    "href": "https://fleetsmart.biz/",
-    "position": "Mobile App Developer",
-    "department": "Development",
-    "categories": ["Work Experience", "Internship"],
-    "date": "Nov 2023 - May 2024",
-    "location": "Austin, TX, USA",
-    "summary": "Built the organization’s first cross-platform mobile app integrating web and native features for a self-growth platform."
   },
   {
     "organization": "Catalyst Collective",
@@ -53,13 +55,13 @@
   },
   {
     "organization": "EduBeyond",
-    "href": "https://edubeyond.ai/",
+    "href": "https://solve.mit.edu/solutions/53756",
     "position": "Full Stack Developer",
     "department": "Technology Team",
     "categories": ["Work Experience", "Internship", "Startup"],
     "date": "Mar 2023 - Feb 2024",
     "location": "Vancouver, Canada",
-    "image": "https://edubeyond.ai/logos/logo_transparent_inline.png",
+    "image": "https://media.licdn.com/dms/image/v2/C560BAQGACFALUj8_0A/company-logo_200_200/company-logo_200_200/0/1661723230762/edu_beyond_logo?e=2147483647&v=beta&t=qj8W4xKw1j86AO-0W6z9u4imzZBgJf6G8BrgIVGbNdA",
     "summary": "Implemented full stack LMS features including announcements, messaging, document handling, and generative AI. Scaled platform to 30,000 users."
   },
   {
