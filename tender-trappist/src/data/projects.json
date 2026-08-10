@@ -1,19 +1,23 @@
 [
   {
-    "organization": "Apovo Recommendation Engine",
+    "id": "apovo",
+    "organization": "Apovo App",
     "categories": ["Machine Learning"],
     "date": "Nov 2024 - Present",
-    "summary": "A hybrid recommendation engine using content-based filtering and collaborative filtering.",
+    "summary": "Built a full stack app. Included a hybrid recommendation engine using content-based filtering and collaborative filtering.",
     "details": "Written in Python + Flask with PyMongo for database and PyTorch and Scikit-learn for machine learning. Microservice design though currently bundled in a monolith. Performed many optimizations such as progressive rendering, asynchronous microservies, caching, and inlining decision trees for fast recommendations (TTFB < 1s, TTLB < 3s). Developing 3 phases of the recommendation engine: \nPhase 1 - Cold start: use ML techniques (NLP, classifiers/tagging, etc) to give good content based suggestions. Guarantee that relevant content is returned for the initial users of the app when we don’t know which resources are popular. \nPhase 2 - Few users: Item based collaborative filtering using ML techniques on the contents of the items (eg embeddings* and tags). We do not have as much data as would be possible to calculate item similarity for all items as not all items have interaction data yet, and likewise we do not perform user-based collaborative filtering because the small number of users and large number of resources makes it unlikely for meaningful comparison metrics for access patterns (we could perform ML techniques to do user-based recs on a smaller set of data such as tags, but we will address that below). \nPhase 2.1: Given our case of homogenous users, we can simply track popularity of tags, organizations, etc for the entire userbase to perform a rudimentary user-based collaborative filtering \nPhase 2.2: to prevent specific resources from always dominating a user’s feed, we added an extra stratified search phase on different media types. \nPhase 3 - Many users: we may begin using more advanced techniques for recommendations such as full-scale matrix factorization collaborative filtering based on similar clicks (independent of previous tagging). Not sure how to do that yet. A specific detail is that due to users’ temporal changes, we store weekly snapshots of individual users’ accesses and use the similarity between the past week’s access patterns with another user’s patterns to acquire this week’s likely patterns"
   },
   {
+    "id": "cgr",
     "organization": "C++ Autograd Library",
+    "href": "https://github.com/Jzhyang1/cgr",
     "categories": ["Machine Learning", "GPU Computing"],
     "date": "June 2025 - Present",
     "summary": "A model-training library for C++ that supports autograd, GPU computing, and distributed training.",
     "details": "Written in C++23. The library supports compile-time size definitions for tensors (C++ metaprogramming), autograd, and distributed training. Activation functions (e.g. Tanh, Sigmoid) and initializers (e.g. Xavier) are built-in. The library supports both CPU and GPU computing with CUDA."
   },
   {
+    "id": "16bit",
     "organization": "16-bit Computer",
     "categories": ["Computer Architecture", "Assembly", "FPGA"],
     "date": "April 2025 - May 2025",
@@ -21,6 +25,7 @@
     "details": "The computer is a 16 bit pipelined RISC processor with 16 registers. Supported operations are load/store, add/subtract, move. The architecture (designed for games) includes memory mappings for tilemaps, sprites, and scroll registers. This is all reflected in the Rust emulator including graphics. A Snake game written in assembly (with the help of macros) and Conway's Game of Life written in C were implemented to run on the architecture. The assembler is written in Python. The project was done as the final project for the Computer Architecture course at UT Austin."
   },
   {
+    "id": "concurrency",
     "organization": "Concurrency Libraries",
     "categories": ["Multiprocess", "Multithread", "Libraries"],
     "date": "Feb 2025 - Mar 2025",
@@ -28,6 +33,7 @@
     "details": "Written in C++17. 1) A coalescing arena-based memory allocator for shared mmap memory between forked processes. 2) A multiple-fixed stack multithreaded go-like coroutine library that supports message-passing and recursive optimizations."
   },
   {
+    "id": "fun",
     "organization": "Fun-Lang",
     "categories": ["Programming Language", "Compiler", "Interpreter"],
     "date": "Feb 2025",
@@ -35,6 +41,7 @@
     "details": "Written in C. The language supports variables, functions, and control flow. It includes an interpreter built with a recursive descent parser (later modified into a Pratt parser). A compiler is built for the x86-64 architecture that outputs GNU assembly. The compiler performs optimizations such as constant folding, tail-call optimization, variable replacement, and dead code elimination. The just-in-time compiler generates x86-64 binary in mmaped memory (POSIX-only) on function-boundaries on the fly and caches them."
   },
   {
+    "id": "arm64",
     "organization": "ARM64 decomplier and emulator",
     "categories": ["Assembly"],
     "date": "Feb 2025",
@@ -42,6 +49,7 @@
     "details": "Written in C. The emulator supports a subset of the ARM64 architecture, including arithmetic, memory access, and control flow. The decompiler outputs human-readable ARM64 assembly from the binary to work with the emulator."
   },
   {
+    "id": "monomer",
     "organization": "Monomer",
     "href": "https://monomer.dev/",
     "categories": ["Programming Language", "Compiler", "Interpreter"],
@@ -49,6 +57,7 @@
     "summary": "General purpose programming language."
   },
   {
+    "id": "Esindeen",
     "organization": "Esindeen",
     "href": "https://esindeen.com/",
     "categories": ["Web app", "Cloud"],
@@ -56,6 +65,7 @@
     "summary": "Online college application essay tracker."
   },
   {
+    "id": "merl",
     "organization": "MERL",
     "href": "https://sites.google.com/view/meerl",
     "categories": ["Programming Language", "Preprocessor", "Interpreter"],
@@ -63,27 +73,23 @@
     "summary": "General purpose programming language."
   },
   {
+    "id": "fermi",
     "organization": "Fermi Guesser",
-    "href": "https://jzhyang.com/old/games/fermi.html",
+    "href": "/games/fermi",
     "categories": ["Web app"],
     "date": "Jan 2023 - May 2023",
     "summary": "Science Olympiad memorization tool."
   },
   {
+    "id": "forbidden_island",
     "organization": "Forbidden Island",
-    "href": "https://jzhyang.com/old/ForbiddenIsland.html",
     "categories": ["Game", "Java Swing"],
-    "date": "Sept 2022 - Dec 2022",
-    "summary": "High school board game project."
+    "date": "Sept 2021 - Feb 2022",
+    "summary": "A digital adaptation of the Forbidden Island board game, built for a high school team project.",
+    "details": "Team: Jonathan Yang, James Guo, Kolby Frison, Keerthana Krishnan, Eric Zhu. \nBuilt with Java Swing, reimplementing the Forbidden Island board game's rules, cards, and cooperative win/loss conditions as a playable desktop app. \nTechnical document: ~~/forbidden-island-ink-saving-edition.pdf~~ \nDownload: ~~https://drive.google.com/file/d/1LP-5s3n3hqT58MWd7KEe12yW8ZxwaAME/view?usp=sharing~~"
   },
   {
-    "organization": "Snake Game",
-    "href": "https://jzhyang.com/old/games/snake/TraditionalSnake.html",
-    "categories": ["Game", "Web app"],
-    "date": "Sept 2023",
-    "summary": "High school web game project."
-  },
-  {
+    "id": "autoschedule",
     "organization": "Autoschedule",
     "date": "Jan 2020",
     "categories": ["Windows Desktop Application", "Scripting language"],

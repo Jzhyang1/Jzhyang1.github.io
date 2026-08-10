@@ -6,8 +6,8 @@
   <div id="shell-content" class="shell-content">
     <div id="output" class="output"></div>
     <form id="shell-form">
-      <span id="current-path">/ $ </span>
-      <input id="command-input" type="text" />
+      <span id="current-path">$ </span>
+      <input id="command-input" type="text" autocomplete="off" spellcheck="false" />
     </form>
   </div>
 </div>
@@ -32,6 +32,7 @@
     flex-direction: column;
     background: #000;
     padding: 20px;
+    overflow-y: auto;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
   }
@@ -42,7 +43,7 @@
     border-top-right-radius: 15px;
     padding-left: 20px;
     padding-top: 5px;
-    padding-bottom: 5px;;
+    padding-bottom: 5px;
   }
 
   .output {
@@ -50,159 +51,106 @@
     flex-direction: column;
     width: 100%;
     word-break: break-all;
+    white-space: pre-wrap;
   }
 
-  .shell-form {
+  #shell-form {
     display: flex;
     flex-direction: row;
-    flex: 1;
+    flex: none;
+  }
+
+  #current-path {
+    white-space: nowrap;
   }
 
   input {
+    flex: 1;
     background: none;
     border: none;
     color: #fff;
     outline: none;
     font-family: monospace;
-    max-width: 275px;
+    padding-left: 8px;
+    width: fit-content;
   }
 </style>
 
 <script>
-  import pages, {type Directory} from "../data/importer"
+  import { runCommand, type ShellContext } from "../lib/shell/commands";
+  import { completeToken } from "../lib/shell/autocomplete";
+  import { CommandHistory } from "../lib/shell/history";
 
-  let currentPath: string[] = [];
+  const HISTORY_LIMIT = 100;
 
-  const topbarElement = document.getElementById('topbar');
-  const selectableElement = document.getElementById('shell-content');
-  const outputElement = document.getElementById('output');
-  const commandInput = document.getElementById('command-input') as HTMLInputElement;
-  const shellForm = document.getElementById('shell-form');
-  const currentPathElement = document.getElementById('current-path');
+  const topbarElement = document.getElementById("topbar")!;
+  const shellContentElement = document.getElementById("shell-content")!;
+  const outputElement = document.getElementById("output")!;
+  const commandInput = document.getElementById("command-input") as HTMLInputElement;
+  const shellForm = document.getElementById("shell-form")!;
+  const currentPathElement = document.getElementById("current-path")!;
 
-  const calculatePath = (path: string) => {
-    const ret = path.startsWith('/') ? [] : new Array(...currentPath);
+  const ctx: ShellContext = { path: [] };
+  const history = new CommandHistory(HISTORY_LIMIT);
 
-    for (const change of path.split('/').filter(Boolean)){
-      const dir = ret.reduce((cur, s)=>cur[s] as Directory, pages)
-      if (change === '..' && ret.length > 0) {
-        ret.pop();
-      } else if (change === '.') {
-        //do nothing
-      } else if (Object.keys(dir).includes(change) && typeof(dir[change]) === 'object') {
-        ret.push(change);
-      } else {
-        return null;
-      }
-    }
-    return ret;
-  } 
+  const promptText = () => `$ `;
 
-  const directoryAt = (path: string[]): Directory | Directory[] => {
-    return path.reduce((cur, s)=> (
-          Array.isArray(cur) ? cur.find((val) => val['organization'] === s) :
-          typeof(cur) === 'object' ? cur[s] : ''
-        ), pages);
-  }
-
-  const handleCommand = (command: string) => {
-    if (!(outputElement && commandInput && topbarElement && currentPathElement)) {
-      console.log('missing an element')
-        return;
-    }
-
-    const args = command.match(/(?:[^\s"]+|"[^"]*")+/g)?.map(e => e.replaceAll('"', '')) ?? [];
-    const cmd = args[0];
-    const params = args.slice(1);
-
-    switch (cmd) {
-      case 'help':
-        appendOutput('Available commands: echo, ls, cat, open, cd, clear');
-        break;
-      case 'echo':
-        appendOutput(params.join(' '));
-        break;
-      case 'ls':{
-        const dirPath = params.length ? calculatePath(params[0]) : currentPath
-        if (dirPath) {
-          const dir = directoryAt(dirPath);
-          appendOutput(
-            (Array.isArray(dir) ? dir.map((e)=>e.organization) : Object.keys(dir))
-              .map(e=>(e as string).includes(' ') ? `"${e}"` : e)
-              .join('\u2003\u2003'));
-        } else {
-          appendOutput(`ls ${params[0]}: No such directory`);
-        }
-        break;
-      }
-      case 'cat':{
-        const filePath = params[0];
-        const fileName = filePath.substring(filePath.lastIndexOf('/') + 1)
-        const findPath = calculatePath(filePath.substring(0, filePath.lastIndexOf('/')));
-
-        const dir = findPath ? directoryAt(findPath) : {};
-        const file = Array.isArray(dir) ? dir.find((e)=>e.organization === fileName) : dir[fileName];
-        if (file) {
-          appendOutput(typeof(file) === 'object' ? JSON.stringify(file) : file.toString());
-        } else {
-          appendOutput(`cat ${params[0]}: No such file or directory`);
-        }
-        break;
-      }
-      case 'open':{
-        const filePath = params[0];
-        const fileName = filePath.substring(filePath.lastIndexOf('/') + 1)
-        const findPath = calculatePath(filePath.substring(0, filePath.lastIndexOf('/')));
-
-        const dir = findPath ? directoryAt(findPath) : {};
-        const file = Array.isArray(dir) ? dir.find((e)=>e.organization === fileName) : dir[fileName];
-        if (file) {
-          try {
-            window.open((file as any).href, '_blank');
-            appendOutput(`open ${params[0]}: Link opened successfully`);
-          } catch (e) {
-            appendOutput(`open ${params[0]}: Failed to open link or no corresponding link`);
-          }
-        } else {
-          appendOutput(`open ${params[0]}: No such file or directory`);
-        }
-        break;
-      }
-      case 'cd':
-        const newPath = calculatePath(params[0])
-        if (newPath) {
-          currentPath = newPath;
-          currentPathElement.textContent = `/${currentPath.join('/')} $ `;
-          topbarElement.textContent = `/${currentPath.join('/')}`;
-        } else {
-          appendOutput(`cd ${params[0]}: No such directory`);
-        }
-        break;
-      case 'clear':
-        outputElement?.replaceChildren();
-        break;
-      default:
-        appendOutput(`${cmd}: command not found`);
-    }
-  };
-
-  const appendOutput = (text: string) => {
-    const div = document.createElement('div');
+  const appendLine = (text: string, className?: string) => {
+    const div = document.createElement("div");
     div.textContent = text;
-    outputElement?.appendChild(div);
+    if (className) div.className = className;
+    outputElement.appendChild(div);
+    shellContentElement.scrollTop = shellContentElement.scrollHeight;
   };
 
-  shellForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const command = commandInput?.value;
-    handleCommand(command);
-    if (commandInput) {
-        commandInput.value = '';
+  const refreshPrompt = () => {
+    currentPathElement.textContent = promptText();
+    topbarElement.textContent = `/${ctx.path.join("/")}`;
+  };
+
+  const submitCommand = (command: string) => {
+    // Feature 1: echo the entered command into the scrollback before its output.
+    appendLine(`${promptText()}${command}`, "echoed-command");
+
+    const result = runCommand(command, ctx);
+    if (result.clear) {
+      outputElement.replaceChildren();
+    } else {
+      result.lines.forEach((line) => appendLine(line));
     }
+
+    history.push(command);
+    refreshPrompt();
+  };
+
+  const handleTab = (event: KeyboardEvent) => {
+    event.preventDefault();
+    const value = commandInput.value;
+    const match = value.match(/\S+$/);
+    if (!match || match.index === undefined) return;
+
+    const completed = completeToken(ctx.path, match[0]);
+    if (completed) commandInput.value = value.slice(0, match.index) + completed;
+  };
+
+  const handleHistoryNav = (event: KeyboardEvent) => {
+    event.preventDefault();
+    const next =
+      event.key === "ArrowUp" ? history.previous(commandInput.value) : history.next();
+    if (next !== null) commandInput.value = next;
+  };
+
+  shellForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const command = commandInput.value;
+    commandInput.value = "";
+    submitCommand(command);
   });
 
-  selectableElement?.addEventListener('click', (e) => {
-    e.preventDefault();
-    commandInput.focus();
-  })
+  commandInput.addEventListener("keydown", (event) => {
+    if (event.key === "Tab") handleTab(event);
+    else if (event.key === "ArrowUp" || event.key === "ArrowDown") handleHistoryNav(event);
+  });
+
+  shellContentElement.addEventListener("click", () => commandInput.focus());
 </script>
