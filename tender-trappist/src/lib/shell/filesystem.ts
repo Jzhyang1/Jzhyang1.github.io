@@ -24,6 +24,21 @@ export const directoryAt = (path: string[]): Directory | Directory[] =>
 export const entryNames = (dir: Directory | Directory[]): string[] =>
   Array.isArray(dir) ? dir.map((entry) => entry.id as string) : Object.keys(dir);
 
+/**
+ * Whether `name` inside `dir` is itself a directory (cd/ls-able), as opposed
+ * to a leaf entry (only `cat`/`open`-able). Array entries are always leaves
+ * (matches `resolvePath`'s rule below). Among a plain directory's children, a
+ * plain object counts as a sub-directory unless it carries an `href` - those
+ * are single-link leaves (e.g. social/nav shortcuts) rather than browsable
+ * directories.
+ */
+export const isDirectoryEntry = (dir: Directory | Directory[], name: string): boolean => {
+  if (Array.isArray(dir)) return false;
+  const entry = dir[name];
+  if (Array.isArray(entry)) return true;
+  return isPlainDirectory(entry) && typeof (entry as Record<string, unknown>).href !== "string";
+};
+
 /** Fetches a single named child (object key, or array item by `id`). */
 export const getEntry = (dir: Directory | Directory[], name: string): Entry => {
   if (Array.isArray(dir)) return dir.find((entry) => entry.id === name);
@@ -45,7 +60,7 @@ export const resolvePath = (currentPath: string[], path: string): string[] | nul
       continue;
     }
     const dir = directoryAt(result);
-    if (!isPlainDirectory(dir) || !(segment in dir)) return null;
+    if (!isPlainDirectory(dir) || !isDirectoryEntry(dir, segment)) return null;
     result.push(segment);
   }
   return result;

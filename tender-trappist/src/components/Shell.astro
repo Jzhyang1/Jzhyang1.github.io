@@ -54,6 +54,11 @@
     white-space: pre-wrap;
   }
 
+  .output :global(.dir) {
+    color: #4da6ff;
+    font-weight: bold;
+  }
+
   #shell-form {
     display: flex;
     flex-direction: row;
@@ -77,7 +82,7 @@
 </style>
 
 <script>
-  import { runCommand, type ShellContext } from "../lib/shell/commands";
+  import { runCommand, type OutputLine, type ShellContext } from "../lib/shell/commands";
   import { completeToken } from "../lib/shell/autocomplete";
   import { CommandHistory } from "../lib/shell/history";
 
@@ -95,10 +100,21 @@
 
   const promptText = () => `$ `;
 
-  const appendLine = (text: string, className?: string) => {
+  const appendLine = (line: OutputLine, className?: string) => {
     const div = document.createElement("div");
-    div.textContent = text;
     if (className) div.className = className;
+
+    if (typeof line === "string") {
+      div.textContent = line;
+    } else {
+      for (const segment of line) {
+        const span = document.createElement("span");
+        span.textContent = segment.text;
+        if (segment.className) span.className = segment.className;
+        div.appendChild(span);
+      }
+    }
+
     outputElement.appendChild(div);
     shellContentElement.scrollTop = shellContentElement.scrollHeight;
   };

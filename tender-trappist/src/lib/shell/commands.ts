@@ -1,4 +1,12 @@
-import { directoryAt, entryNames, resolveEntry, resolveEntryLocation, resolvePath, type Directory } from "./filesystem";
+import {
+  directoryAt,
+  entryNames,
+  isDirectoryEntry,
+  resolveEntry,
+  resolveEntryLocation,
+  resolvePath,
+  type Directory,
+} from "./filesystem";
 
 /** Page each top-level directory is rendered on, used to fall back to an in-page anchor. */
 const SECTION_PAGES: Record<string, string> = {
@@ -10,12 +18,20 @@ export interface ShellContext {
   path: string[];
 }
 
+/** A styled run of text within an output line, e.g. a directory name colored in `ls`. */
+export interface LineSegment {
+  text: string;
+  className?: string;
+}
+
+export type OutputLine = string | LineSegment[];
+
 export interface CommandOutput {
-  lines: string[];
+  lines: OutputLine[];
   clear?: boolean;
 }
 
-const out = (...lines: string[]): CommandOutput => ({ lines });
+const out = (...lines: OutputLine[]): CommandOutput => ({ lines });
 const clearScreen = (): CommandOutput => ({ lines: [], clear: true });
 
 /** Splits raw input into a command word and its arguments, honoring "quoted strings". */
@@ -39,8 +55,15 @@ const ls = (params: string[], ctx: ShellContext): CommandOutput => {
   const dirPath = target ? resolvePath(ctx.path, target) : ctx.path;
   if (!dirPath) return out(`ls: ${target}: No such file or directory`);
 
-  const names = entryNames(directoryAt(dirPath)).map((name) => (name.includes(" ") ? `"${name}"` : name));
-  return out(names.join("  "));
+  const dir = directoryAt(dirPath);
+  const segments: LineSegment[] = entryNames(dir).flatMap((name, index) => {
+    const display = name.includes(" ") ? `"${name}"` : name;
+    const segment: LineSegment = isDirectoryEntry(dir, name)
+      ? { text: display, className: "dir" }
+      : { text: display };
+    return index === 0 ? [segment] : [{ text: "  " }, segment];
+  });
+  return { lines: [segments] };
 };
 
 const cat = (params: string[], ctx: ShellContext): CommandOutput => {
@@ -56,10 +79,11 @@ const cat = (params: string[], ctx: ShellContext): CommandOutput => {
 const openFallbackPage = (target: string, path: string[]): CommandOutput => {
   const [section, id] = path;
   const pageHref = SECTION_PAGES[section];
-  if (!pageHref || !id) return out(`open: ${target}: No link found`);
+  if (!pageHref) return out(`open: ${target}: No link found`);
 
-  window.location.href = `${pageHref}#${id}`;
-  return out(`open: ${target}: No link found, opening ${pageHref} instead`);
+  const href = id ? `${pageHref}#${id}` : pageHref;
+  window.location.href = href;
+  return out(`open: ${target}: No link found, opening ${href} instead`);
 };
 
 const open = (params: string[], ctx: ShellContext): CommandOutput => {
