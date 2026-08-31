@@ -21,7 +21,10 @@ function hashDate(dateString: string): number {
 }
 
 function formatDate(d: Date): string {
-  return d.toISOString().split('T')[0];
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 // Check raw 1-in-20 chance for a specific date
