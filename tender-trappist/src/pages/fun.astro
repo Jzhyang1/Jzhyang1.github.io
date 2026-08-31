@@ -1,0 +1,218 @@
+---
+import background from '../assets/background.svg';
+import Layout from '../layouts/Layout.astro';
+
+export interface Props {
+  date?: Date;
+}
+
+const { date = new Date() } = Astro.props;
+
+// Simple deterministic hash function for a date string (YYYY-MM-DD)
+function hashDate(dateString: string): number {
+  let hash = 0;
+  for (let i = 0; i < dateString.length; i++) {
+    const char = dateString.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0; // Convert to 32-bit integer
+  }
+  // Map to a normalized float [0, 1)
+  return (Math.abs(hash) % 1000000) / 1000000;
+}
+
+function formatDate(d: Date): string {
+  return d.toISOString().split('T')[0];
+}
+
+// Check raw 1-in-20 chance for a specific date
+function isRawFunDay(d: Date): boolean {
+  const dateStr = formatDate(d);
+  const score = hashDate(dateStr);
+  return score < 0.05; // 5% chance (1 in 20)
+}
+
+// Main logic enforcing the minimal distance rule within a 7-day window
+function evaluateDay(targetDate: Date) {
+  // Check if target date triggers raw probability
+  const rawHit = isRawFunDay(targetDate);
+
+  if (!rawHit) {
+    return { isFun: false, reason: 'Unlucky' };
+  }
+
+  // Look back at the past 6 days to suppress clustering
+  for (let i = 1; i <= 6; i++) {
+    const pastDate = new Date(targetDate);
+    pastDate.setDate(targetDate.getDate() - i);
+
+    if (isRawFunDay(pastDate)) {
+      return {
+        isFun: false,
+        reason: `You already had a fun day ${i} days ago`,
+      };
+    }
+  }
+
+  return { isFun: true, reason: 'The stars have aligned!' };
+}
+
+const result = evaluateDay(date);
+const formattedDateString = date.toLocaleDateString('en-US', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout>
+  <main class="fun-page">
+    <img class="fun-background" src={background.src} alt="" fetchpriority="high" />
+    <div class="fun-overlay" aria-hidden="true"></div>
+
+    <section class="fun-card">
+      <p class="fun-kicker">Fun check</p>
+      <h1 class="fun-date">{formattedDateString}</h1>
+
+      {result.isFun ? (
+        <div class="fun-status fun">
+          <h2>Today is FUN!</h2>
+        </div>
+      ) : (
+        <div class="fun-status not-fun">
+          <h2>Today is NOT Fun.</h2>
+        </div>
+      )}
+
+      <p class="fun-reason">{result.reason}</p>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  :global(body) {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #020817;
+  }
+
+  .fun-page {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    padding: 2rem 1rem;
+  }
+
+  .fun-background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.72;
+    filter: saturate(1.2) contrast(1.05);
+  }
+
+  .fun-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at top, rgba(251, 191, 36, 0.18), transparent 30%),
+      linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.35));
+  }
+
+  .fun-card {
+    position: relative;
+    z-index: 1;
+    width: min(560px, 100%);
+    padding: 2.25rem 2rem;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(15, 23, 42, 0.62);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(14px);
+    text-align: center;
+  }
+
+  .fun-kicker {
+    margin: 0 0 0.75rem;
+    color: #cbd5e1;
+    letter-spacing: 0.18em;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .fun-date {
+    margin: 0;
+    color: #f8fafc;
+    font-size: clamp(1.5rem, 2vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .fun-status {
+    margin-top: 1.5rem;
+  }
+
+  .fun-status h2 {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+
+  .fun-status.fun h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    background: linear-gradient(90deg, #fbbf24, #f472b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: bounce 1s ease-in-out;
+    text-shadow: 0 10px 30px rgba(251, 191, 36, 0.2);
+  }
+
+  .fun-status.not-fun h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #cbd5e1;
+  }
+
+  .fun-reason {
+    margin: 1.25rem 0 0;
+    color: rgba(226, 232, 240, 0.82);
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(-8px);
+    }
+    50% {
+      transform: translateY(0);
+    }
+    75% {
+      transform: translateY(-4px);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .fun-card {
+      padding: 1.5rem 1.25rem;
+    }
+
+    .fun-status.fun h2 {
+      font-size: 2.5rem;
+    }
+
+    .fun-status.not-fun h2 {
+      font-size: 2rem;
+    }
+  }
+</style>
