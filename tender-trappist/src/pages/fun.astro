@@ -6,7 +6,7 @@ export interface Props {
   date?: Date;
 }
 
-const { date = new Date() } = Astro.props;
+const date = new Date();
 
 // Simple deterministic hash function for a date string (YYYY-MM-DD)
 function hashDate(dateString: string): number {
@@ -66,6 +66,23 @@ const formattedDateString = date.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
 });
+
+// Build the Sun–Sat calendar week containing `date`
+const weekStart = new Date(date);
+weekStart.setHours(0, 0, 0, 0);
+weekStart.setDate(date.getDate() - date.getDay());
+
+const weekDays = Array.from({ length: 7 }, (_, i) => {
+  const day = new Date(weekStart);
+  day.setDate(weekStart.getDate() + i);
+  return {
+    date: day,
+    label: day.toLocaleDateString('en-US', { weekday: 'short' }),
+    dayOfMonth: day.getDate(),
+    isToday: formatDate(day) === formatDate(date),
+    ...evaluateDay(day),
+  };
+});
 ---
 
 <Layout>
@@ -88,6 +105,16 @@ const formattedDateString = date.toLocaleDateString('en-US', {
       )}
 
       <p class="fun-reason">{result.reason}</p>
+    </section>
+
+    <section class="week-view">
+      {weekDays.map((day) => (
+        <div class:list={['week-day', { 'is-today': day.isToday, 'is-fun': day.isFun }]}>
+          <span class="week-day-label">{day.label}</span>
+          <span class="week-day-number">{day.dayOfMonth}</span>
+          <span class="week-day-icon" aria-hidden="true">{day.isFun ? '🎉' : '·'}</span>
+        </div>
+      ))}
     </section>
   </main>
 </Layout>
@@ -216,6 +243,73 @@ const formattedDateString = date.toLocaleDateString('en-US', {
 
     .fun-status.not-fun h2 {
       font-size: 2rem;
+    }
+  }
+
+  .week-view {
+    position: relative;
+    z-index: 1;
+    width: min(560px, 100%);
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+  }
+
+  .week-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.75rem 0.25rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .week-day-label {
+    color: #94a3b8;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .week-day-number {
+    color: #f8fafc;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .week-day-icon {
+    font-size: 1rem;
+    line-height: 1;
+    color: rgba(148, 163, 184, 0.6);
+  }
+
+  .week-day.is-fun {
+    border-color: rgba(251, 191, 36, 0.5);
+    background: linear-gradient(160deg, rgba(251, 191, 36, 0.16), rgba(244, 114, 182, 0.12));
+  }
+
+  .week-day.is-today {
+    border-color: #f472b6;
+    box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.35);
+  }
+
+  @media (max-width: 640px) {
+    .week-view {
+      gap: 0.35rem;
+    }
+
+    .week-day {
+      padding: 0.5rem 0.15rem;
+      border-radius: 0.75rem;
+    }
+
+    .week-day-number {
+      font-size: 0.9rem;
     }
   }
 </style>
