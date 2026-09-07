@@ -67,22 +67,11 @@ const formattedDateString = date.toLocaleDateString('en-US', {
   day: 'numeric',
 });
 
-// Build the Sun–Sat calendar week containing `date`
-const weekStart = new Date(date);
-weekStart.setHours(0, 0, 0, 0);
-weekStart.setDate(date.getDate() - date.getDay());
-
-const weekDays = Array.from({ length: 7 }, (_, i) => {
-  const day = new Date(weekStart);
-  day.setDate(weekStart.getDate() + i);
-  return {
-    date: day,
-    label: day.toLocaleDateString('en-US', { weekday: 'short' }),
-    dayOfMonth: day.getDate(),
-    isToday: formatDate(day) === formatDate(date),
-    ...evaluateDay(day),
-  };
-});
+// Weekday order (Sun–Sat) is fixed regardless of date, so this can be
+// rendered at build time. The actual day numbers and fun-status of each
+// cell depend on the visitor's current date, so those are left as
+// placeholders here and filled in by the client script below.
+const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 ---
 
 <Layout>
@@ -92,32 +81,113 @@ const weekDays = Array.from({ length: 7 }, (_, i) => {
 
     <section class="fun-card">
       <p class="fun-kicker">Fun check</p>
-      <h1 class="fun-date">{formattedDateString}</h1>
+      <h1 class="fun-date" id="fun-date">{formattedDateString}</h1>
 
-      {result.isFun ? (
-        <div class="fun-status fun">
-          <h2>Today is FUN!</h2>
-        </div>
-      ) : (
-        <div class="fun-status not-fun">
-          <h2>Today is NOT Fun.</h2>
-        </div>
-      )}
+      <div class="fun-status" id="fun-status" data-fun={String(result.isFun)}>
+        <h2 id="fun-status-heading">{result.isFun ? 'Today is FUN!' : 'Today is NOT Fun.'}</h2>
+      </div>
 
-      <p class="fun-reason">{result.reason}</p>
+      <p class="fun-reason" id="fun-reason">{result.reason}</p>
     </section>
 
-    <section class="week-view">
-      {weekDays.map((day) => (
-        <div class:list={['week-day', { 'is-today': day.isToday, 'is-fun': day.isFun }]}>
-          <span class="week-day-label">{day.label}</span>
-          <span class="week-day-number">{day.dayOfMonth}</span>
-          <span class="week-day-icon" aria-hidden="true">{day.isFun ? '🎉' : '·'}</span>
+    <section class="week-view" id="week-view">
+      {weekdayLabels.map((label, i) => (
+        <div class="week-day" data-week-day={i}>
+          <span class="week-day-label">{label}</span>
+          <span class="week-day-number"></span>
+          <span class="week-day-icon" aria-hidden="true"></span>
         </div>
       ))}
     </section>
   </main>
 </Layout>
+
+<script>
+  // Recompute everything client-side so the page reflects the visitor's
+  // actual current date instead of whatever day the static site was built on.
+
+  function hashDate(dateString: string): number {
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+      const char = dateString.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash |= 0;
+    }
+    return (Math.abs(hash) % 1000000) / 1000000;
+  }
+
+  function formatDate(d: Date): string {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function isRawFunDay(d: Date): boolean {
+    return hashDate(formatDate(d)) < 0.05;
+  }
+
+  function evaluateDay(targetDate: Date): { isFun: boolean; reason: string } {
+    if (!isRawFunDay(targetDate)) {
+      return { isFun: false, reason: 'Unlucky' };
+    }
+
+    for (let i = 1; i <= 6; i++) {
+      const pastDate = new Date(targetDate);
+      pastDate.setDate(targetDate.getDate() - i);
+
+      if (isRawFunDay(pastDate)) {
+        return { isFun: false, reason: `You already had a fun day ${i} days ago` };
+      }
+    }
+
+    return { isFun: true, reason: 'The stars have aligned!' };
+  }
+
+  const now = new Date();
+  const result = evaluateDay(now);
+
+  const dateEl = document.getElementById('fun-date');
+  if (dateEl) {
+    dateEl.textContent = now.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
+  const statusEl = document.getElementById('fun-status');
+  const headingEl = document.getElementById('fun-status-heading');
+  const reasonEl = document.getElementById('fun-reason');
+  statusEl?.classList.toggle('fun', result.isFun);
+  statusEl?.classList.toggle('not-fun', !result.isFun);
+  if (headingEl) headingEl.textContent = result.isFun ? 'Today is FUN!' : 'Today is NOT Fun.';
+  if (reasonEl) reasonEl.textContent = result.reason;
+
+  const weekStart = new Date(now);
+  weekStart.setHours(0, 0, 0, 0);
+  weekStart.setDate(now.getDate() - now.getDay());
+
+  document.querySelectorAll<HTMLElement>('[data-week-day]').forEach((el) => {
+    const i = Number(el.dataset.weekDay);
+    const day = new Date(weekStart);
+    day.setDate(weekStart.getDate() + i);
+
+    const dayResult = evaluateDay(day);
+    const isToday = formatDate(day) === formatDate(now);
+
+    el.classList.toggle('is-today', isToday);
+    el.classList.toggle('is-fun', dayResult.isFun);
+
+    const label = el.querySelector('.week-day-label');
+    const number = el.querySelector('.week-day-number');
+    const icon = el.querySelector('.week-day-icon');
+    if (label) label.textContent = day.toLocaleDateString('en-US', { weekday: 'short' });
+    if (number) number.textContent = String(day.getDate());
+    if (icon) icon.textContent = dayResult.isFun ? '🎉' : '—';
+  });
+</script>
 
 <style>
   :global(body) {
@@ -283,19 +353,34 @@ const weekDays = Array.from({ length: 7 }, (_, i) => {
   }
 
   .week-day-icon {
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1;
-    color: rgba(148, 163, 184, 0.6);
+    color: rgba(148, 163, 184, 0.45);
   }
 
   .week-day.is-fun {
-    border-color: rgba(251, 191, 36, 0.5);
-    background: linear-gradient(160deg, rgba(251, 191, 36, 0.16), rgba(244, 114, 182, 0.12));
+    border-color: #fbbf24;
+    background: linear-gradient(160deg, rgba(251, 191, 36, 0.35), rgba(244, 114, 182, 0.22));
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.2);
+  }
+
+  .week-day.is-fun .week-day-icon {
+    color: #fbbf24;
+    font-size: 1.3rem;
+  }
+
+  .week-day.is-fun .week-day-label,
+  .week-day.is-fun .week-day-number {
+    color: #fff7ed;
   }
 
   .week-day.is-today {
     border-color: #f472b6;
     box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.35);
+  }
+
+  .week-day.is-today.is-fun {
+    box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.45), 0 8px 20px rgba(251, 191, 36, 0.2);
   }
 
   @media (max-width: 640px) {
