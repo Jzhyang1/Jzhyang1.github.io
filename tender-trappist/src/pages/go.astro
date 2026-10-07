@@ -1,0 +1,510 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+	<main class="go">
+		<h1>Go</h1>
+		<div class="go-layout">
+			<section class="board-col">
+				<div class="status" id="status" aria-live="polite"></div>
+				<div class="canvas-wrap" id="canvas-wrap">
+					<canvas id="board"></canvas>
+				</div>
+				<progress id="progress" max="1" value="0" hidden></progress>
+				<div class="actions">
+					<button id="btn-pass">Pass</button>
+					<button id="btn-undo">Undo</button>
+					<button id="btn-resign">Resign</button>
+				</div>
+				<div class="ai-info" id="ai-info"></div>
+			</section>
+
+			<aside class="panel">
+				<fieldset>
+					<legend>Game</legend>
+					<label>
+						Mode
+						<select id="mode">
+							<option value="ai">vs AI</option>
+							<option value="local">Two players (local)</option>
+						</select>
+					</label>
+					<label id="row-color">
+						You play
+						<select id="human-color">
+							<option value="1">Black (first)</option>
+							<option value="2">White</option>
+						</select>
+					</label>
+					<label>
+						Board size
+						<select id="size">
+							<option value="9">9 × 9</option>
+							<option value="13">13 × 13</option>
+							<option value="19">19 × 19</option>
+						</select>
+					</label>
+					<button id="btn-new" class="primary">New game</button>
+				</fieldset>
+
+				<fieldset id="ai-settings">
+					<legend>AI (Monte-Carlo tree search)</legend>
+					<label title="UCT exploration constant. Higher values spread simulations over more moves; lower values dig deeper into the current favourites.">
+						<span>Uncertainty factor <output id="out-exploration"></output></span>
+						<input type="range" id="p-exploration" min="0" max="3" step="0.05" />
+					</label>
+					<label title="Number of simulations per move. More is stronger but slower.">
+						<span>Samples <output id="out-samples"></output></span>
+						<input type="range" id="p-samples" min="100" max="20000" step="100" />
+					</label>
+					<label title="Prune a move if it leaves the mover behind by more than this many stones. 0 turns pruning off.">
+						<span>Piece-difference prune <output id="out-pieceDiffLimit"></output></span>
+						<input type="range" id="p-pieceDiffLimit" min="0" max="30" step="1" />
+					</label>
+					<label title="Only consider moves within this many points (Chebyshev distance) of an existing stone.">
+						<span>Placement distance <output id="out-proximity"></output></span>
+						<input type="range" id="p-proximity" min="1" max="19" step="1" />
+					</label>
+					<label title="Simulated moves are picked with probability proportional to 1 / distance^k, where distance is to the nearest stone. 0 = uniform, 1 = inversely proportional.">
+						<span>Distance bias (k) <output id="out-distanceBias"></output></span>
+						<input type="range" id="p-distanceBias" min="0" max="3" step="0.25" />
+					</label>
+					<button id="btn-defaults">Reset AI defaults</button>
+				</fieldset>
+
+				<div class="score" id="score"></div>
+				<p class="rules">
+					Rules: area scoring (Tromp–Taylor) with 7.5 komi, positional superko, no suicide. The game ends after two
+					consecutive passes and there is no dead-stone marking, so capture dead stones before you pass.
+				</p>
+			</aside>
+		</div>
+	</main>
+</Layout>
+
+<style>
+	.go {
+		max-width: 1000px;
+		margin: 0 auto;
+		padding: 70px 16px 40px;
+		font-family: system-ui, sans-serif;
+	}
+	h1 {
+		margin: 0 0 12px;
+	}
+	.go-layout {
+		display: flex;
+		gap: 24px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+	.board-col {
+		flex: 1 1 420px;
+		min-width: 0;
+		max-width: 640px;
+	}
+	.panel {
+		flex: 0 0 260px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+	.status {
+		font-size: 1.1em;
+		font-weight: 600;
+		min-height: 1.6em;
+		margin-bottom: 6px;
+	}
+	.canvas-wrap {
+		width: 100%;
+		aspect-ratio: 1;
+	}
+	canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 6px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+		touch-action: manipulation;
+	}
+	progress {
+		width: 100%;
+		margin-top: 8px;
+	}
+	.actions {
+		display: flex;
+		gap: 8px;
+		margin-top: 10px;
+	}
+	.ai-info {
+		margin-top: 8px;
+		font-size: 0.9em;
+		color: #555;
+		min-height: 1.2em;
+	}
+	fieldset {
+		border: 1px solid #ccc;
+		border-radius: 6px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	label {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		font-size: 0.9em;
+	}
+	label span {
+		display: flex;
+		justify-content: space-between;
+	}
+	output {
+		font-weight: 600;
+	}
+	select,
+	button {
+		font: inherit;
+		padding: 5px 8px;
+	}
+	button {
+		cursor: pointer;
+	}
+	button:disabled {
+		cursor: default;
+	}
+	button.primary {
+		background: #333;
+		color: white;
+		border: none;
+		border-radius: 4px;
+	}
+	.score {
+		font-size: 0.9em;
+		line-height: 1.5;
+	}
+	.rules {
+		font-size: 0.8em;
+		color: #666;
+		margin: 0;
+	}
+	[hidden] {
+		display: none !important;
+	}
+</style>
+
+<script>
+	import { Game, BLACK, WHITE, PASS, EMPTY, pointName, type Color } from '../lib/go/engine';
+	import { runMCTS, DEFAULT_PARAMS, type MCTSParams } from '../lib/go/mcts';
+
+	const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+	const canvas = $<HTMLCanvasElement>('board');
+	const ctx = canvas.getContext('2d')!;
+	const statusEl = $('status');
+	const aiInfo = $('ai-info');
+	const scoreEl = $('score');
+	const progress = $<HTMLProgressElement>('progress');
+	const btnPass = $<HTMLButtonElement>('btn-pass');
+	const btnUndo = $<HTMLButtonElement>('btn-undo');
+	const btnResign = $<HTMLButtonElement>('btn-resign');
+	const modeSel = $<HTMLSelectElement>('mode');
+	const colorSel = $<HTMLSelectElement>('human-color');
+	const sizeSel = $<HTMLSelectElement>('size');
+
+	const name = (c: Color) => (c === BLACK ? 'Black' : 'White');
+
+	// ---- state ----
+	let game = new Game(9);
+	let mode: 'ai' | 'local' = 'ai';
+	let human: Color = BLACK;
+	let thinking = false;
+	let token = { cancelled: false };
+	let hover = -1;
+	let message = '';
+	const params: MCTSParams = { ...DEFAULT_PARAMS };
+
+	// ---- AI parameter controls ----
+	const paramKeys = Object.keys(DEFAULT_PARAMS) as (keyof MCTSParams)[];
+	function syncParamInputs() {
+		for (const k of paramKeys) {
+			$<HTMLInputElement>('p-' + k).value = String(params[k]);
+			$('out-' + k).textContent = k === 'pieceDiffLimit' && params[k] === 0 ? 'off' : String(params[k]);
+		}
+	}
+	for (const k of paramKeys) {
+		$<HTMLInputElement>('p-' + k).addEventListener('input', (e) => {
+			params[k] = parseFloat((e.target as HTMLInputElement).value);
+			syncParamInputs();
+		});
+	}
+	$('btn-defaults').addEventListener('click', () => {
+		Object.assign(params, DEFAULT_PARAMS);
+		syncParamInputs();
+	});
+
+	// ---- game flow ----
+	const aiToMove = () => mode === 'ai' && !game.over && game.board.toPlay !== human;
+	const humanCanMove = () => !game.over && !thinking && !aiToMove();
+
+	function newGame() {
+		token.cancelled = true;
+		thinking = false;
+		mode = modeSel.value as 'ai' | 'local';
+		human = parseInt(colorSel.value) as Color;
+		game = new Game(parseInt(sizeSel.value));
+		message = '';
+		aiInfo.textContent = '';
+		progress.hidden = true;
+		render();
+		maybeAIMove();
+	}
+
+	async function maybeAIMove() {
+		if (!aiToMove() || thinking) return;
+		thinking = true;
+		const myToken = (token = { cancelled: false });
+		const forGame = game;
+		const aiColor = game.board.toPlay;
+		render();
+		progress.hidden = false;
+		progress.value = 0;
+		const res = await runMCTS(game.board, params, {
+			token: myToken,
+			komi: game.komi,
+			onProgress: (d, t) => (progress.value = d / t),
+		});
+		if (!res || myToken.cancelled || forGame !== game) return;
+		progress.hidden = true;
+		thinking = false;
+
+		let chosen = PASS;
+		let played = false;
+		for (const m of res.ranked) {
+			// a rejected move (e.g. superko) falls through to the next-best one
+			if (game.play(m.move).ok) {
+				chosen = m.move;
+				played = true;
+				break;
+			}
+		}
+		if (!played) game.play(PASS);
+		const size = game.size;
+		aiInfo.textContent =
+			`${name(aiColor)} (AI) played ${pointName(chosen, size)} — est. win chance ` +
+			`${Math.round(res.winRate * 100)}% · ${res.samples} samples in ${(res.ms / 1000).toFixed(1)}s`;
+		message = '';
+		render();
+	}
+
+	function cancelThinking() {
+		token.cancelled = true;
+		thinking = false;
+		progress.hidden = true;
+	}
+
+	function humanPlay(move: number) {
+		if (!humanCanMove()) return;
+		const r = game.play(move);
+		if (!r.ok) {
+			message = r.reason;
+			render();
+			return;
+		}
+		message = '';
+		render();
+		maybeAIMove();
+	}
+
+	btnPass.addEventListener('click', () => humanPlay(PASS));
+	btnUndo.addEventListener('click', () => {
+		cancelThinking();
+		if (!game.undo()) return;
+		// against the AI, rewind to the human's turn
+		while (mode === 'ai' && game.canUndo() && game.board.toPlay !== human) game.undo();
+		message = '';
+		render();
+		maybeAIMove();
+	});
+	btnResign.addEventListener('click', () => {
+		if (game.over) return;
+		cancelThinking();
+		game.resign(mode === 'ai' ? human : game.board.toPlay);
+		render();
+	});
+	$('btn-new').addEventListener('click', newGame);
+	modeSel.addEventListener('change', () => ($('row-color').hidden = $('ai-settings').hidden = modeSel.value !== 'ai'));
+
+	// ---- rendering ----
+	function layout() {
+		const dpr = window.devicePixelRatio || 1;
+		const px = Math.round($('canvas-wrap').clientWidth);
+		canvas.width = px * dpr;
+		canvas.height = px * dpr;
+		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		return px;
+	}
+
+	function starPoints(n: number): number[] {
+		if (n === 9) return [2, 4, 6];
+		if (n === 13) return [3, 6, 9];
+		return [3, 9, 15];
+	}
+
+	function stone(x: number, y: number, r: number, color: Color, alpha = 1) {
+		ctx.save();
+		ctx.globalAlpha = alpha;
+		const g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.1, x, y, r);
+		if (color === BLACK) {
+			g.addColorStop(0, '#666');
+			g.addColorStop(1, '#000');
+		} else {
+			g.addColorStop(0, '#fff');
+			g.addColorStop(1, '#cfcfcf');
+		}
+		ctx.beginPath();
+		ctx.arc(x, y, r, 0, Math.PI * 2);
+		ctx.fillStyle = g;
+		ctx.shadowColor = 'rgba(0,0,0,0.4)';
+		ctx.shadowBlur = r * 0.3;
+		ctx.shadowOffsetY = r * 0.1;
+		ctx.fill();
+		ctx.restore();
+	}
+
+	function render() {
+		const px = layout();
+		const b = game.board;
+		const n = game.size;
+		const cell = px / (n + 1);
+		const pos = (i: number) => cell * (i + 1);
+
+		ctx.fillStyle = '#dcb35c';
+		ctx.fillRect(0, 0, px, px);
+
+		ctx.strokeStyle = '#3a2a10';
+		ctx.lineWidth = 1;
+		ctx.beginPath();
+		for (let i = 0; i < n; i++) {
+			ctx.moveTo(pos(0), pos(i) + 0.5);
+			ctx.lineTo(pos(n - 1), pos(i) + 0.5);
+			ctx.moveTo(pos(i) + 0.5, pos(0));
+			ctx.lineTo(pos(i) + 0.5, pos(n - 1));
+		}
+		ctx.stroke();
+
+		ctx.fillStyle = '#3a2a10';
+		for (const sx of starPoints(n)) {
+			for (const sy of starPoints(n)) {
+				ctx.beginPath();
+				ctx.arc(pos(sx) + 0.5, pos(sy) + 0.5, cell * 0.08, 0, Math.PI * 2);
+				ctx.fill();
+			}
+		}
+
+		// coordinate labels
+		ctx.fillStyle = '#3a2a10';
+		ctx.font = `${Math.max(9, cell * 0.3)}px system-ui, sans-serif`;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		for (let i = 0; i < n; i++) {
+			ctx.fillText(pointName(i, n).replace(/\d+/, ''), pos(i), cell * 0.4);
+			ctx.fillText(String(n - i), cell * 0.4, pos(i));
+		}
+
+		const r = cell * 0.46;
+		const over = game.over;
+		const sc = game.score();
+		for (let i = 0; i < n * n; i++) {
+			const x = pos(i % n), y = pos(Math.floor(i / n));
+			const c = b.cells[i] as Color | 0;
+			if (c) {
+				stone(x, y, r, c);
+			} else if (over && !game.resigned && sc.owner[i]) {
+				ctx.fillStyle = sc.owner[i] === BLACK ? '#000' : '#fff';
+				ctx.strokeStyle = '#000';
+				ctx.lineWidth = 1;
+				const s = cell * 0.22;
+				ctx.fillRect(x - s / 2, y - s / 2, s, s);
+				ctx.strokeRect(x - s / 2, y - s / 2, s, s);
+			}
+		}
+
+		// last move marker
+		if (b.lastMove >= 0) {
+			const x = pos(b.lastMove % n), y = pos(Math.floor(b.lastMove / n));
+			ctx.strokeStyle = b.cells[b.lastMove] === BLACK ? '#fff' : '#000';
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.arc(x, y, r * 0.45, 0, Math.PI * 2);
+			ctx.stroke();
+		}
+		// ko marker
+		if (b.ko >= 0) {
+			const x = pos(b.ko % n), y = pos(Math.floor(b.ko / n));
+			ctx.strokeStyle = '#c00';
+			ctx.lineWidth = 2;
+			ctx.strokeRect(x - r * 0.4, y - r * 0.4, r * 0.8, r * 0.8);
+		}
+		// hover ghost
+		if (hover >= 0 && humanCanMove() && b.cells[hover] === EMPTY) {
+			stone(pos(hover % n), pos(Math.floor(hover / n)), r, b.toPlay, 0.45);
+		}
+
+		updateText(sc);
+	}
+
+	function updateText(sc: ReturnType<Game['score']>) {
+		const b = game.board;
+		const res = game.result();
+		if (res) {
+			statusEl.textContent = res.text;
+		} else if (thinking) {
+			statusEl.textContent = `${name(b.toPlay)} (AI) is thinking…`;
+		} else {
+			let s = `${name(b.toPlay)} to play`;
+			if (b.passes === 1) s += ` — ${name(b.toPlay === BLACK ? WHITE : BLACK)} passed`;
+			if (mode === 'ai') s += b.toPlay === human ? ' (you)' : ' (AI)';
+			statusEl.textContent = message ? `${message}  ${s}` : s;
+		}
+		scoreEl.innerHTML =
+			`<b>Prisoners</b> — Black: ${b.captured[BLACK]}, White: ${b.captured[WHITE]}<br>` +
+			`<b>Area now</b> — Black: ${sc.black}, White: ${sc.white - sc.komi} + ${sc.komi} komi`;
+		const canAct = humanCanMove();
+		btnPass.disabled = !canAct;
+		btnResign.disabled = game.over;
+		btnUndo.disabled = !game.canUndo() && !game.resigned;
+	}
+
+	// ---- input ----
+	function pointAt(e: MouseEvent): number {
+		const rect = canvas.getBoundingClientRect();
+		const n = game.size;
+		const cell = rect.width / (n + 1);
+		const fx = (e.clientX - rect.left) / cell - 1;
+		const fy = (e.clientY - rect.top) / cell - 1;
+		const x = Math.round(fx), y = Math.round(fy);
+		if (x < 0 || y < 0 || x >= n || y >= n) return -1;
+		if (Math.abs(fx - x) > 0.5 || Math.abs(fy - y) > 0.5) return -1;
+		return y * n + x;
+	}
+	canvas.addEventListener('mousemove', (e) => {
+		const p = pointAt(e);
+		if (p !== hover) {
+			hover = p;
+			render();
+		}
+	});
+	canvas.addEventListener('mouseleave', () => {
+		hover = -1;
+		render();
+	});
+	canvas.addEventListener('click', (e) => {
+		const p = pointAt(e);
+		if (p >= 0) humanPlay(p);
+	});
+	window.addEventListener('resize', render);
+
+	syncParamInputs();
+	newGame();
+</script>

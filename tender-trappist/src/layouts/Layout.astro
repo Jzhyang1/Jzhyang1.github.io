@@ -23,10 +23,10 @@ import projects from "../data/projects.json"
             <a href="/exp">Experience</a>
             <a href="/gallery">Gallery</a>
 			<div class="dropdown">
-				<a id="projects-toggle" class="dropdown-toggle">
+				<a class="dropdown-toggle">
 					Projects
 				</a>
-				<div id="projects-list" class="dropdown-list">
+				<div class="dropdown-list">
 					{
 						projects.filter((p)=>p.date.includes("Present")).map((p)=>(
 						<a class="dropdown-item" href={p.href ?? '/projects'}>
@@ -34,6 +34,16 @@ import projects from "../data/projects.json"
 						</a>))
 					}
 					<a href="/projects">SEE ALL</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<a class="dropdown-toggle">
+					Fun Things
+				</a>
+				<div class="dropdown-list">
+					<a class="dropdown-item" href="/fun">Fun</a>
+					<a class="dropdown-item" href="/go">Go</a>
+					<a class="dropdown-item" href="/games/fermi">Fermi Guesser</a>
 				</div>
 			</div>
             <a href="/Resume.pdf" target="_blank">Resume</a>
@@ -173,29 +183,22 @@ import projects from "../data/projects.json"
 	});
 
 
-	const projectsToggle = document.getElementById('projects-toggle');
-    const projectsList = document.getElementById('projects-list');
+	const dropdowns = document.querySelectorAll<HTMLElement>('.dropdown');
 
-    // Toggling dropdown visibility
-    projectsToggle?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const dropdown = projectsToggle.parentElement;
-		if (!dropdown) return;
+	// Toggling dropdown visibility (opening one closes the others)
+	dropdowns.forEach((dropdown) => {
+		dropdown.querySelector('.dropdown-toggle')?.addEventListener('click', (e) => {
+			e.preventDefault();
+			const wasOpen = dropdown.classList.contains('show');
+			dropdowns.forEach((d) => d.classList.remove('show'));
+			if (!wasOpen) dropdown.classList.add('show');
+		});
+	});
 
-        if (dropdown.classList.contains('show')) {
-            dropdown.classList.remove('show');
-        } else {
-            dropdown.classList.add('show');
-        }
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-		if (!projectsToggle || !projectsList) return;
-
-        if (!projectsToggle.contains(e.target as Node) && 
-			!projectsList.contains(e.target as Node)) {
-            projectsToggle.parentElement?.classList.remove('show');
-        }
-    });
+	// Close dropdowns when clicking outside
+	document.addEventListener('click', (e) => {
+		dropdowns.forEach((d) => {
+			if (!d.contains(e.target as Node)) d.classList.remove('show');
+		});
+	});
 </script>
