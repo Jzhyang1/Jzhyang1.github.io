@@ -58,9 +58,17 @@ import Layout from '../layouts/Layout.astro';
 						<span>Samples <output id="out-samples"></output></span>
 						<input type="range" id="p-samples" min="100" max="20000" step="100" />
 					</label>
-					<label title="Prune a move if it leaves the mover behind by more than this many stones. 0 turns pruning off.">
-						<span>Piece-difference prune <output id="out-pieceDiffLimit"></output></span>
-						<input type="range" id="p-pieceDiffLimit" min="0" max="30" step="1" />
+					<label title="Prune a move if it lowers the mover's heuristic score (survival-weighted stones plus influence) by more than this many points. 0 turns pruning off.">
+						<span>Score-difference prune <output id="out-pruneScore"></output></span>
+						<input type="range" id="p-pruneScore" min="0" max="20" step="0.5" />
+					</label>
+					<label title="How much a stone's worth is reduced when its group is unlikely to survive (few liberties, no eyes). 0 = every stone counts fully.">
+						<span>Survival weighting <output id="out-survivalStrength"></output></span>
+						<input type="range" id="p-survivalStrength" min="0" max="1" step="0.05" />
+					</label>
+					<label title="Random moves simulated before judging the position with the heuristic instead of playing to the end. 0 = play out the whole game.">
+						<span>Playout depth <output id="out-playoutDepth"></output></span>
+						<input type="range" id="p-playoutDepth" min="0" max="100" step="2" />
 					</label>
 					<label title="Only consider moves within this many points (Chebyshev distance) of an existing stone.">
 						<span>Placement distance <output id="out-proximity"></output></span>
@@ -229,7 +237,7 @@ import Layout from '../layouts/Layout.astro';
 	function syncParamInputs() {
 		for (const k of paramKeys) {
 			$<HTMLInputElement>('p-' + k).value = String(params[k]);
-			$('out-' + k).textContent = k === 'pieceDiffLimit' && params[k] === 0 ? 'off' : String(params[k]);
+			$('out-' + k).textContent = (k === 'pruneScore' || k === 'playoutDepth') && params[k] === 0 ? (k === 'pruneScore' ? 'off' : 'full') : String(params[k]);
 		}
 	}
 	for (const k of paramKeys) {

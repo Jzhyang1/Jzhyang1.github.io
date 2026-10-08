@@ -1,5 +1,5 @@
 // Parameterized Monte-Carlo tree search for Go.
-import { Board, EMPTY, KOMI, PASS, other, type Color } from "./engine";
+import { Board, BLACK, EMPTY, KOMI, PASS, other, type Color } from "./engine";
 
 export interface MCTSParams {
 	/** UCT exploration constant: higher = explores less-visited moves more. */
@@ -7,10 +7,21 @@ export interface MCTSParams {
 	/** Number of simulations (tree iterations) to run. */
 	samples: number;
 	/**
-	 * Prune a move when it leaves the mover behind by more than this many stones
-	 * (own stones - opponent stones < -limit). 0 disables pruning.
+	 * Prune a move when the combined heuristic score (survival-weighted stones + influence
+	 * territory, own minus opponent) drops by more than this many points relative to the
+	 * position before the move. 0 disables pruning.
 	 */
-	pieceDiffLimit: number;
+	pruneScore: number;
+	/**
+	 * 0..1. How much a stone's worth is scaled by its likelihood of survival s <= 1:
+	 * worth = 1 - survivalStrength * (1 - s). 0 counts every stone fully.
+	 */
+	survivalStrength: number;
+	/**
+	 * Random moves to simulate from a leaf before judging the position with the heuristic
+	 * evaluation instead of playing to the end. 0 = play out the whole game.
+	 */
+	playoutDepth: number;
 	/**
 	 * Only consider moves within this Chebyshev distance of an existing stone
 	 * (1 = adjacent incl. diagonals). Ignored on an empty board.
@@ -26,7 +37,9 @@ export interface MCTSParams {
 export const DEFAULT_PARAMS: MCTSParams = {
 	exploration: 0.7,
 	samples: 3000,
-	pieceDiffLimit: 8,
+	pruneScore: 2,
+	survivalStrength: 0.7,
+	playoutDepth: 16,
 	proximity: 3,
 	distanceBias: 1,
 };
@@ -64,14 +77,131 @@ class Node {
 	untried: Candidate[] | null = null;
 	pruned: Candidate[] = [];
 	noPrune = false;
+	/** heuristic score for the side to move here, lazily computed (for pruning) */
+	baseline: number | null = null;
 	visits = 0;
-	value = 0; // wins for `mover`
+	value = 0; // expected wins (0..1 per simulation) for `mover`
 	constructor(
 		readonly board: Board,
 		readonly move: number,
 		readonly mover: Color,
 		readonly parent: Node | null,
 	) {}
+}
+
+// ---- heuristic evaluation ---------------------------------------------------
+
+/** Survival likelihood by liberty count (index capped), before eye bonuses. */
+const LIBERTY_SURVIVAL = [0, 0.15, 0.45, 0.65, 0.8];
+/** Influence territory is speculative: weight 0.6 / distance^2, and only within this distance of a stone,
+ * so a lone far-away stone can't claim a whole empty board. */
+const TERRITORY_WEIGHT = 0.6;
+const TERRITORY_RANGE = 3;
+
+const nbrOf = (n: number, p: number, out: number[]) => {
+	out.length = 0;
+	const x = p % n, y = (p / n) | 0;
+	if (y > 0) out.push(p - n);
+	if (x > 0) out.push(p - 1);
+	if (x < n - 1) out.push(p + 1);
+	if (y < n - 1) out.push(p + n);
+};
+
+/**
+ * Heuristic score for each colour: every stone is worth 1 - strength * (1 - s), where s <= 1 is
+ * its group's survival likelihood (1 with two or more eyes, otherwise from its liberties, with
+ * one eye giving a boost). Empty points are added by nearest-stone influence, weighted by that
+ * group's worth and discounted by distance. Contested points count for nobody.
+ */
+function evaluate(b: Board, strength: number): [number, number, number] {
+	const n = b.size, nn = n * n, c = b.cells;
+	const group = new Int32Array(nn).fill(-1);
+	const worth: number[] = [];
+	const nb: number[] = [];
+	const stack: number[] = [];
+	const libSeen = new Int32Array(nn);
+	const score: [number, number, number] = [0, 0, 0];
+	let libStamp = 0;
+
+	for (let p = 0; p < nn; p++) {
+		if (c[p] === EMPTY || group[p] >= 0) continue;
+		const color = c[p] as Color;
+		const id = worth.length;
+		let size = 0, libs = 0, eyes = 0;
+		libStamp++;
+		stack.length = 0;
+		stack.push(p);
+		group[p] = id;
+		while (stack.length) {
+			const q = stack.pop()!;
+			size++;
+			nbrOf(n, q, nb);
+			for (const r of nb) {
+				if (c[r] === EMPTY) {
+					if (libSeen[r] !== libStamp) {
+						libSeen[r] = libStamp;
+						libs++;
+						if (b.isEye(r, color)) eyes++;
+					}
+				} else if (c[r] === color && group[r] < 0) {
+					group[r] = id;
+					stack.push(r);
+				}
+			}
+		}
+		let s = LIBERTY_SURVIVAL[Math.min(libs, LIBERTY_SURVIVAL.length - 1)];
+		if (eyes >= 2) s = 1;
+		else if (eyes === 1 && libs > 1) s += (1 - s) * 0.6;
+		const w = 1 - strength * (1 - s);
+		worth.push(w);
+		score[color] += w * size;
+	}
+
+	// nearest-stone influence over empty points (multi-source BFS, 3 = contested)
+	const dist = new Int16Array(nn).fill(-1);
+	const own = new Uint8Array(nn);
+	const pw = new Float32Array(nn);
+	const queue: number[] = [];
+	for (let p = 0; p < nn; p++) {
+		if (c[p] === EMPTY) continue;
+		dist[p] = 0;
+		own[p] = c[p];
+		pw[p] = worth[group[p]];
+		queue.push(p);
+	}
+	for (let i = 0; i < queue.length; i++) {
+		const u = queue[i];
+		if (own[u] === 3) continue;
+		nbrOf(n, u, nb);
+		for (const v of nb) {
+			if (dist[v] < 0) {
+				dist[v] = dist[u] + 1;
+				own[v] = own[u];
+				pw[v] = pw[u];
+				queue.push(v);
+			} else if (dist[v] === dist[u] + 1 && own[v] !== own[u]) {
+				own[v] = 3;
+			}
+		}
+	}
+	for (let p = 0; p < nn; p++) {
+		if (c[p] === EMPTY && (own[p] === 1 || own[p] === 2) && dist[p] <= TERRITORY_RANGE)
+			score[own[p]] += (TERRITORY_WEIGHT * pw[p]) / (dist[p] * dist[p]);
+	}
+	return score;
+}
+
+/** Heuristic score margin (no komi) from `color`'s point of view. */
+function scoreDiff(b: Board, color: Color, params: MCTSParams): number {
+	const s = evaluate(b, params.survivalStrength);
+	return s[color] - s[other(color)];
+}
+
+/** Squash a heuristic margin into a pseudo win probability for BLACK. */
+function blackWinProb(b: Board, komi: number, params: MCTSParams): number {
+	const s = evaluate(b, params.survivalStrength);
+	const margin = s[1] - s[2] - komi;
+	return 1 / (1 + Math.exp(-margin / Math.max(2, b.size * 0.5)));
 }
 
 /** Chebyshev distance from each point to the nearest stone, capped at `cap`. */
@@ -147,9 +277,10 @@ function expand(node: Node, params: MCTSParams): Node | null {
 		const m = cand.move;
 		const nb = node.board.clone();
 		if (!nb.play(m)) continue;
-		if (m !== PASS && !node.noPrune && params.pieceDiffLimit > 0) {
+		if (m !== PASS && !node.noPrune && params.pruneScore > 0) {
 			// captures are already reflected here: play() removes captured stones
-			if (nb.stones[mover] - nb.stones[other(mover)] < -params.pieceDiffLimit) {
+			node.baseline ??= scoreDiff(node.board, mover, params);
+			if (scoreDiff(nb, mover, params) < node.baseline - params.pruneScore) {
 				node.pruned.push(cand);
 				continue;
 			}
@@ -229,17 +360,23 @@ function playoutStep(b: Board, dist: Uint8Array, weights: number[]): number {
 	return played;
 }
 
-function playout(start: Board, komi: number, params: MCTSParams): Color {
+/**
+ * Simulate from `start` and return the pseudo win probability for BLACK: 1 / 0 when the game
+ * is finished, else the heuristic evaluation once `playoutDepth` moves have been played.
+ */
+function playout(start: Board, komi: number, params: MCTSParams): number {
 	const b = start.clone();
 	const limit = b.size * b.size * 2;
+	const depth = params.playoutDepth > 0 ? Math.min(params.playoutDepth, limit) : limit;
 	const dist = distanceMap(b, DCAP);
 	// weights[d] = acceptance probability for a point at distance d (d=0 only for stale entries)
 	const weights = Array.from({ length: DCAP + 1 }, (_, d) => weightOf(d, params.distanceBias));
 	let steps = 0;
-	while (b.passes < 2 && steps++ < limit) {
+	while (b.passes < 2 && steps++ < depth) {
 		playoutStep(b, dist, weights);
 	}
-	return b.score(komi).winner;
+	if (b.passes >= 2 || params.playoutDepth <= 0) return b.score(komi).winner === BLACK ? 1 : 0;
+	return blackWinProb(b, komi, params);
 }
 
 /**
@@ -276,12 +413,13 @@ export async function runMCTS(
 		}
 
 		// simulation
-		const winner = node.board.passes >= 2 ? node.board.score(komi).winner : playout(node.board, komi, params);
+		const pBlack =
+			node.board.passes >= 2 ? (node.board.score(komi).winner === BLACK ? 1 : 0) : playout(node.board, komi, params);
 
 		// backpropagation
 		for (let n: Node | null = node; n; n = n.parent) {
 			n.visits++;
-			if (n.mover === winner) n.value++;
+			n.value += n.mover === BLACK ? pBlack : 1 - pBlack;
 		}
 		done++;
 
