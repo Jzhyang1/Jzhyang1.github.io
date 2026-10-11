@@ -1,5 +1,5 @@
 // Parameterized Monte-Carlo tree search for Go.
-import { Board, BLACK, EMPTY, KOMI, PASS, other, type Color } from "./engine";
+import { Board, BLACK, EMPTY, KOMI, PASS, WHITE, other, type Color } from "./engine";
 
 export interface MCTSParams {
 	/** UCT exploration constant: higher = explores less-visited moves more. */
@@ -37,9 +37,9 @@ export interface MCTSParams {
 export const DEFAULT_PARAMS: MCTSParams = {
 	exploration: 0.7,
 	samples: 3000,
-	pruneScore: 2,
+	pruneScore: 4,
 	survivalStrength: 0.7,
-	playoutDepth: 16,
+	playoutDepth: 24,
 	proximity: 3,
 	distanceBias: 1,
 };
@@ -92,11 +92,15 @@ class Node {
 // ---- heuristic evaluation ---------------------------------------------------
 
 /** Survival likelihood by liberty count (index capped), before eye bonuses. */
-const LIBERTY_SURVIVAL = [0, 0.15, 0.45, 0.65, 0.8];
+function libertySurvival(liberties: number) {
+	return (liberties) / (liberties + 1)
+}
 /** Influence territory is speculative: weight 0.6 / distance^2, and only within this distance of a stone,
  * so a lone far-away stone can't claim a whole empty board. */
 const TERRITORY_WEIGHT = 0.6;
 const TERRITORY_RANGE = 3;
+/** Small cohesion bonus for stones with nearby friendly support. */
+const FRIENDLY_DISTANCE_WEIGHT = 0.25;
 
 const nbrOf = (n: number, p: number, out: number[]) => {
 	out.length = 0;
@@ -149,12 +153,28 @@ function evaluate(b: Board, strength: number): [number, number, number] {
 				}
 			}
 		}
-		let s = LIBERTY_SURVIVAL[Math.min(libs, LIBERTY_SURVIVAL.length - 1)];
+		let s = libertySurvival(libs);
 		if (eyes >= 2) s = 1;
 		else if (eyes === 1 && libs > 1) s += (1 - s) * 0.6;
 		const w = 1 - strength * (1 - s);
 		worth.push(w);
 		score[color] += w * size;
+	}
+
+	// Reward friendly stones for being close to another stone of the same colour.
+	// This makes connecting and nearby follow-up moves preferable to equally
+	// valuable moves that remain isolated, without changing liberty survival.
+	for (let p = 0; p < nn; p++) {
+		const color = c[p] as Color;
+		if (color !== BLACK && color !== WHITE) continue;
+		let nearest = n;
+		const px = p % n, py = (p / n) | 0;
+		for (let q = 0; q < nn; q++) {
+			if (q === p || c[q] !== color) continue;
+			const qx = q % n, qy = (q / n) | 0;
+			nearest = Math.min(nearest, Math.max(Math.abs(px - qx), Math.abs(py - qy)));
+		}
+		if (nearest < n) score[color] += FRIENDLY_DISTANCE_WEIGHT / nearest;
 	}
 
 	// nearest-stone influence over empty points (multi-source BFS, 3 = contested)
